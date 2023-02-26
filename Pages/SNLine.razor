@@ -1,0 +1,47 @@
+@using drdblaze.Shapes;
+
+
+@*<line x1="@X1" y1="@Y1" x2="@X2" y2="@Y2" stroke="@StrokeColor" stroke-width="@StrokeWidth" />
+*@
+<line x1="@Point1.Position.X" y1="@Point1.Position.Y" x2="@Point2.Position.X" y2="@Point2.Position.Y" stroke="@StrokeColor" stroke-width="@StrokeWidth" />
+<text @onclick="(e)=>SelectLine(e,Line)" 
+   
+    x="@((Point1.Position.X + Point2.Position.X) / 2)" 
+    y="@((Point1.Position.Y + Point2.Position.Y) / 2)" 
+    text-anchor="middle" alignment-baseline="middle" font-size="16" font-weight="bold" fill="@StrokeColor">x</text>
+
+
+
+@code {
+
+
+
+    [Parameter]
+    public Point Point1  { get; set; }
+    [Parameter]
+    public Point Point2 { get; set; }
+
+    [Parameter]
+    public Line Line { get; set; }
+
+    [Parameter]
+    public EventCallback<Line> LineBack { get; set; }
+
+    [Parameter]
+    public string StrokeColor { get; set; }
+    [Parameter]
+    public int StrokeWidth { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        StateHasChanged();
+    }
+
+    private async Task SelectLine(EventArgs e, Line line)
+    {
+
+        await LineBack.InvokeAsync(line);
+    }
+
+}

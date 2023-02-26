@@ -1,0 +1,125 @@
+@using SkiaSharp
+@using drdblaze.Shapes;
+
+
+<rect style="position: relative;z-index:1" @ondblclick="(e) => SelectRectangle(e,Rectangle)" @onclick="() => {Rectangle.Selected = !Rectangle.Selected; }"
+                @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
+              x="@Rectangle.X" y="@Rectangle.Y" width="@Rectangle.Width" height="@Rectangle.Height"
+              rx="10" ry="10" stroke-width="2" stroke="black" fill="@Rectangle.Fill" >
+        
+          
+          </rect>
+<text x="@Rectangle.MC.Position.X" y="@Rectangle.MC.Position.Y"
+      text-anchor="middle" dominant-baseline="middle">
+      @Rectangle.Text</text>
+
+
+@if (Rectangle.Selected)
+{
+    <circle cx="@Rectangle.TL.Position.X" cy="@Rectangle.TL.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.TL)" />
+    <circle cx="@Rectangle.TM.Position.X" cy="@Rectangle.TM.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.TM)" />
+    <circle cx="@Rectangle.TR.Position.X" cy="@Rectangle.TR.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.TR)" />
+    <circle cx="@Rectangle.ML.Position.X" cy="@Rectangle.ML.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.ML)" />
+    <circle cx="@Rectangle.MR.Position.X" cy="@Rectangle.MR.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.MR)" />
+    <circle cx="@Rectangle.BL.Position.X" cy="@Rectangle.BL.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.BL)" />
+    <circle cx="@Rectangle.BM.Position.X" cy="@Rectangle.BM.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.BM)" />
+    <circle cx="@Rectangle.BR.Position.X" cy="@Rectangle.BR.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.BR)" />
+
+}
+
+
+
+@code {
+
+
+    [Parameter]
+    public Rectangle Rectangle { get; set; }
+    [Parameter]
+    public EventCallback OnMouseDown { get; set; }
+    [Parameter]
+    public EventCallback OnMouseUp { get; set; }
+    [Parameter]
+    public EventCallback OnMouseMove { get; set; }
+    [Parameter]
+    public EventCallback<Point> SelectedPoint { get; set; }
+    [Parameter]
+    public EventCallback<Rectangle> RectBack{ get; set; }
+
+
+
+    private bool isDragging;
+    private double startX;
+    private double startY;
+
+    private async Task SelectPoint(MouseEventArgs e,Point point)
+    {
+
+        await SelectedPoint.InvokeAsync(point);
+    }
+
+    private async Task SelectRectangle(MouseEventArgs e, Rectangle rectangle )
+    {
+        
+            await RectBack.InvokeAsync(rectangle);
+        
+        
+    }
+
+
+    private async Task MouseDown(MouseEventArgs e)
+    {
+        
+        isDragging = true;
+        startX = e.ClientX;
+        startY = e.ClientY;
+        await OnMouseDown.InvokeAsync();
+    }
+
+    private async Task MouseUp(MouseEventArgs e)
+    {
+        isDragging = false;
+        await OnMouseUp.InvokeAsync();
+    }
+    private async Task MouseMove(MouseEventArgs e)
+    {
+        if (isDragging)
+        {
+            double deltaX = e.ClientX - startX;
+            double deltaY = e.ClientY - startY;
+            Rectangle.X += (float)deltaX;
+            Rectangle.Y += (float)deltaY;
+            startX = e.ClientX;
+            startY = e.ClientY;
+        }
+        await OnMouseMove.InvokeAsync();
+    }
+
+    //private void OnMouseDown(MouseEventArgs e)
+    //{
+    //    Console.WriteLine(Rectangle.RectPoints.ML.X.ToString());
+    //    isDragging = true;
+    //    startX = e.ClientX;
+    //    startY = e.ClientY;
+    //}
+
+    //private void OnMouseUp(MouseEventArgs e)
+    //{
+    //    isDragging = false;
+    //    Console.WriteLine(Rectangle.RectPoints.ML.X.ToString());
+    //    StateHasChanged();
+    //}
+
+    //private void OnMouseMove(MouseEventArgs e)
+    //{
+    //    if (isDragging)
+    //    {
+    //        double deltaX = e.ClientX - startX;
+    //        double deltaY = e.ClientY - startY;
+    //        Rectangle.X += (float)deltaX;
+    //        Rectangle.Y += (float)deltaY;
+    //        startX = e.ClientX;
+    //        startY = e.ClientY;
+    //    }
+    //}
+
+}
