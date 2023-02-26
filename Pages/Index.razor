@@ -1,26 +1,42 @@
 ﻿@page "/"
 @using drdblaze.Shapes;
 
+<div class="m-2" style="display: flex; flex-direction: row;">
+    <input type="text" style="width:100px;margin-right: 10px" class="form-control"
+           @bind-value="@InputWidth"
+           placeholder="Width"
+           aria-label="Width"
+           aria-describedby="button-addon2">
 
+    <input type="color" style="width:100px" class="form-control my-2"
+           @bind-value="@FillColor"
+           placeholder="Color"
+           aria-label="Color"
+           aria-describedby="button-addon2">
+</div>
 
-<div class="input-group mb-3">
-    <input type="text" class="form-control" @bind-value="@InputText" placeholder="Rectangle Text" aria-label="Rectangle Text" aria-describedby="button-addon2">
+<div class="w-75 input-group m-1">
+    <input type="text" class="form-control" 
+    @bind-value="@InputText" 
+    placeholder="Rectangle Text"
+    aria-label="Rectangle Text" 
+    aria-describedby="button-addon2" 
+    @onkeyup="@(e => { if (e.Key == "Enter") { HandleButtonClick(); } })">
+
     <button class="btn btn-outline-secondary" type="button" id="button-addon2" @onclick="HandleButtonClick">Add</button>
 </div>
 
 
-    <div style="width:1500px;height:2000px;background-color:lightgray ;overflow:auto">
-
-        @*     @foreach(Rectangle rect in Rectangles)
-        {
+<div style="width:1500px;height:2000px;background-color:lightgray ;overflow:auto">
 
 
-        <div style="position:absolute;top:@(rect.MC.Position.X)px;left:@(rect.MC.Position.Y)px">
-        @rect.Text
-        </div>
-        }
-        *@
         <svg width="1570" height="2000">
+
+            @foreach (Line line in Lines)
+            {
+                <SNLine LineBack="RemoveLine" Line="line" Point1="line.Point1" Point2="line.Point2" StrokeColor="@line.Stroke" StrokeWidth="@line.StrokeWidth">
+                </SNLine>
+            }
 
             @foreach (Rectangle rect in Rectangles)
             {
@@ -31,11 +47,7 @@
 
             }
 
-            @foreach (Line line in Lines)
-            {
-                <SNLine LineBack="RemoveLine" Line="line" Point1="line.Point1" Point2="line.Point2" StrokeColor="@line.Stroke" StrokeWidth="@line.StrokeWidth">
-                </SNLine>
-            }
+          
 
 
         </svg>
@@ -49,14 +61,15 @@
 
     private ConfirmDialog dialog;
 
-   
+
     List<Rectangle> Rectangles = new List<Rectangle>();
     List<Line> Lines = new List<Line>();
 
 
     private string InputText { get; set; }
-
-     protected override void OnParametersSet()
+    private int InputWidth { get; set; } = 200;
+    private string FillColor { get; set; } = "bisque";
+    protected override void OnParametersSet()
     {
         base.OnParametersSet();
         StateHasChanged();
@@ -66,10 +79,10 @@
     {
         // Handle button click event here
         Rectangles.Add(
-           new Rectangle(10, 10, 200, 40)
+           new Rectangle(10, 10, InputWidth, 40)
                {
 
-                   Fill = "bisque",
+                   Fill = FillColor,
                    Text = InputText,
 
                }
@@ -98,8 +111,9 @@
                 new Line(pointN1, selectedPoint)
                     {
                         Stroke = "black",
-                        StrokeWidth = 2
-                    }
+                        StrokeWidth = 2,
+                        Selected = false
+        }
             );
             pointNumber = 0;
             pointN1 = new Point();

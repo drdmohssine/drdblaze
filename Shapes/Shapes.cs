@@ -130,7 +130,7 @@ namespace drdblaze.Shapes
         }
         public Point Point1;
         public Point Point2;
-  
+        public bool Selected { get; set; } = false;
         public string Stroke { get; set; }
         public int StrokeWidth { get; set; }
     }

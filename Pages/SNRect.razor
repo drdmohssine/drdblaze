@@ -9,9 +9,11 @@
         
           
           </rect>
-<text x="@Rectangle.MC.Position.X" y="@Rectangle.MC.Position.Y"
+          
+<text style="@((Rectangle.Selected) ? "pointer-events: none;font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" :"font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" )" x="@Rectangle.MC.Position.X" y="@Rectangle.MC.Position.Y"
       text-anchor="middle" dominant-baseline="middle">
       @Rectangle.Text</text>
+
 
 
 @if (Rectangle.Selected)
@@ -25,8 +27,10 @@
     <circle cx="@Rectangle.BM.Position.X" cy="@Rectangle.BM.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.BM)" />
     <circle cx="@Rectangle.BR.Position.X" cy="@Rectangle.BR.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.BR)" />
 
-}
 
+
+
+}
 
 
 @code {
