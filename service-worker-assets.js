@@ -45,7 +45,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-JTdA3UfnukYWECDZTZoHGTq1zPqJx3frGvZ0co5hoi8=",
+      "hash": "sha256-hgwQJxlVJTpk34hm9IwjQOyRgIY1HokzVy7o5h0Ui0w=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -53,11 +53,11 @@
       "url": "_framework\/BlazorBootstrap.dll"
     },
     {
-      "hash": "sha256-7TZVX+cJKwji\/HBbaM3XFvKBmLUiUjW0Li31IQ+KVhs=",
+      "hash": "sha256-RZwYo2vWTiDA5mKIFgDyzPPBd7ugen4si7ggXHLgLBA=",
       "url": "_framework\/drdblaze.dll"
     },
     {
-      "hash": "sha256-Afy03wa7CIT868ZxR5HoKxM1P5C8KkzwU7jpXb2dr9g=",
+      "hash": "sha256-HNzevO5mlPiw8ij3\/+F2yuonQSSjkzlhlc8zaIhAfdY=",
       "url": "_framework\/Microsoft.AspNetCore.Components.dll"
     },
     {
@@ -245,5 +245,5 @@
       "url": "_content\/SkiaSharp.Views.Blazor\/SKHtmlCanvas.js"
     }
   ],
-  "version": "6UxzeB5M"
+  "version": "dx1NRsL4"
 };
