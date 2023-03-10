@@ -1,11 +1,15 @@
 ﻿
 using SkiaSharp;
+using System.ComponentModel.DataAnnotations;
 
 namespace drdblaze.Shapes
 {
 
     public class Rectangle
     {
+        [Key]
+        public int RectangleID { get; set; }
+
         private float _x;
         private float _y;
         private int _width;
@@ -51,7 +55,7 @@ namespace drdblaze.Shapes
             }
         }
 
-        public bool Selected { get; set; } =false;
+        public bool Selected { get; set; }
         public string Fill { get; set; }
         public string Text { get; set; }
 
@@ -71,7 +75,7 @@ namespace drdblaze.Shapes
             Y = y;
             Width = width;
             Height = height;
-
+            Selected = false;
             // Initialize the points with their positions
             UpdatePoints();
         }

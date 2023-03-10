@@ -11,7 +11,7 @@
     stroke="@StrokeColor" 
     stroke-width="@StrokeWidth" />
 
-<text style="@((Line.Selected) ? "visibility: hidden; pointer-events: none;":"")"
+<text style="@((!Line.Selected) ? "visibility: hidden; pointer-events: none;":"")"
       @onclick="(e) => SelectLine(e, Line)"
       x="@((Point1.Position.X + Point2.Position.X) / 2)"
       y="@((Point1.Position.Y + Point2.Position.Y) / 2)"

@@ -1,74 +1,419 @@
 ﻿@page "/"
+@using System.Text.RegularExpressions;
+@using SkiaSharp;
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@using System.IO.Compression;
+@using System.Text;
 @using drdblaze.Shapes;
+@using static drdblaze.Data.SNData;
+@implements IAsyncDisposable
+@inject IJSRuntime JSRuntime
+@inject HttpClient httpClient
+@using SkiaSharp.Views.Blazor;
 
-<div class="m-2" style="display: flex; flex-direction: row;">
-    <input type="text" style="width:100px;margin-right: 10px" class="form-control"
-           @bind-value="@InputWidth"
-           placeholder="Width"
-           aria-label="Width"
-           aria-describedby="button-addon2">
-
-    <input type="color" style="width:100px" class="form-control my-2"
-           @bind-value="@FillColor"
-           placeholder="Color"
-           aria-label="Color"
-           aria-describedby="button-addon2">
-</div>
-
-<div class="w-75 input-group m-1">
-    <input type="text" class="form-control" 
-    @bind-value="@InputText" 
-    placeholder="Rectangle Text"
-    aria-label="Rectangle Text" 
-    aria-describedby="button-addon2" 
-    @onkeyup="@(e => { if (e.Key == "Enter") { HandleButtonClick(); } })">
-
-    <button class="btn btn-outline-secondary" type="button" id="button-addon2" @onclick="HandleButtonClick">Add</button>
-</div>
+@if (skiaCanvasView)
+{
 
 
-<div style="width:1500px;height:2000px;background-color:lightgray ;overflow:auto">
+    <div style="width:@(canvasWidth)px;height:@(canvasWidth)px;background-color:@(canvasColor) ;overflow:auto">
 
 
-        <svg width="1570" height="2000">
-
-            @foreach (Line line in Lines)
-            {
-                <SNLine LineBack="RemoveLine" Line="line" Point1="line.Point1" Point2="line.Point2" StrokeColor="@line.Stroke" StrokeWidth="@line.StrokeWidth">
-                </SNLine>
-            }
-
-            @foreach (Rectangle rect in Rectangles)
-            {
-                <SNRect RectBack ="RemoveRectangle" Rectangle="@rect" SelectedPoint="SelectPoint" OnMouseDown="StatChanged" OnMouseMove="StatChanged" OnMouseUp="StatChanged">
-
-                </SNRect>
+                    <SKCanvasView @ref="skiaView" OnPaintSurface="OnPaintSurface" IgnorePixelScaling="true"
+                         
+                                  style="position: absolute;
+                                         top: 0;background-color:transparent;
+                                         left: 0; width:inherit;height:inherit;
+                                         pointer-events:inherit">
 
 
-            }
 
-          
+                    </SKCanvasView>
+                </div>
 
 
-        </svg>
+}
+else
+{
+    <div @ondblclick="() => {IsSelecting = !IsSelecting;}"
+         style="width:@(canvasWidth)px;height:@(canvasWidth)px;background-color:@(canvasColor) ;overflow:auto">
+
+        @if (IsSelecting)
+        {
+            <svg id="SvgCanvas" viewBox="0 0 1570 2000"
+         @onmousedown="StartSelection" @onmouseup="EndSelection" @onmousemove="UpdateSelection" @onmouseleave="EndSelection">
+
+
+                <rect style="position:relative;z-index:1"
+                      x="@SelectionStartX" y="@SelectionStartY" width="@SelectionWidth" height="@SelectionHeight"
+                      rx="10" ry="10" stroke-width="2" stroke="black" fill="transparent">
+
+
+                </rect>
+
+
+                @foreach (Line line in Lines)
+                {
+                    <SNLine LineBack="RemoveLine" Line="line" Point1="line.Point1" Point2="line.Point2" StrokeColor="@line.Stroke" StrokeWidth="@line.StrokeWidth">
+                    </SNLine>
+                }
+
+                @foreach (Rectangle rect in Rectangles)
+                {
+                    <SNRect RectBack="OnShowModalClick" Rectangle="@rect" SelectedPoint="SelectPoint" OnMouseDown="StatChanged" OnMouseMove="StatChanged" OnMouseUp="StatChanged">
+
+                    </SNRect>
+
+
+                }
+
+
+
+
+            </svg>
+
+        }
+        else
+        {
+            <svg id="SvgCanvas" viewBox="0 0 1570 2000">
+
+
+                <rect style="position:relative;z-index:1"
+              @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
+                      x="@SelectionStartX" y="@SelectionStartY" width="@SelectionWidth" height="@SelectionHeight"
+                      rx="10" ry="10" stroke-width="2" stroke="black" fill="transparent">
+
+
+                </rect>
+
+
+                @foreach (Line line in Lines)
+                {
+                    <SNLine LineBack="RemoveLine" Line="line" Point1="line.Point1" Point2="line.Point2" StrokeColor="@line.Stroke" StrokeWidth="@line.StrokeWidth">
+                    </SNLine>
+                }
+
+                @foreach (Rectangle rect in Rectangles)
+                {
+                    <SNRect RectBack="OnShowModalClick" Rectangle="@rect" SelectedPoint="SelectPoint" OnMouseDown="StatChanged" OnMouseMove="StatChanged" OnMouseUp="StatChanged">
+
+                    </SNRect>
+
+
+                }
+
+
+
+
+            </svg>
+
+        }
+
+
+
+
     </div>
 
+}
+
+<Button style="position:absolute;top:5px;left:600px;width:10px;height:10px" Color="ButtonColor.Primary" @onclick="(async () => { await ShowOffcanvasAsync(); })"></Button>
+
+<div class="form-check form-switch" style="position:absolute;top:1px;left:700px;">
+  <input class="form-check-input" type="checkbox" id="flexSwitchCheck" @bind-value="skiaCanvasView"/>
+  <label class="form-check-label" for="flexSwitchCheck">View</label>
+</div>
 
 <ConfirmDialog @ref="dialog" />
+<Modal @ref="modal" Title="Modal title">
+    <BodyTemplate>
+       
+        <div class="w-75 input-group m-1">
+            <input type="text" class="form-control"
+                   @bind-value="@NewText"
+                   placeholder="Rename Rectangle"
+                   aria-label="Rename Rectangle"
+                   aria-describedby="button-addon2"
+                   @onkeyup="@(e => { if (e.Key == "Enter") { HandleButtonClick(); } })">
 
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2" @onclick="HandleButtonClick">Add</button>
+        </div>
+
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button>
+        <Button Color="ButtonColor.Primary">Save changes</Button>
+    </FooterTemplate>
+</Modal>
+
+
+<Offcanvas @ref="offcanvas" Title="Settings" >
+    <BodyTemplate>
+
+        <div class="card">
+            <div class="m-2 row">
+                <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Canvas Color:</label>
+                <div class="col-8 w-50">
+                    <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                           @bind-value="@canvasColor"
+                           placeholder="Color"
+                           aria-label="Color">
+                </div>
+            </div>
+
+
+            <div class="m-2 row ">
+                <dive class="col-6">
+                    <label for="Canvaswidth" class="form-label">Canvas Width</label>
+
+                    <input id="Canvaswidth" type="text" style="width:100px;margin-right: 10px" class="form-control"
+                           @bind-value="@canvasWidth"
+                           placeholder="Canvas Width"
+                           aria-label="Canvas Width">
+                </dive>
+                <div class="col-6">
+                    <label for="Canvasheight" class="form-label">Canvas Height</label>
+
+                    <input id="Canvasheight" type="text" style="width:100px;margin-right: 10px" class="form-control"
+                           @bind-value="@canvasHeight"
+                           placeholder="Canvas Height"
+                           aria-label="Canvas Height">
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="card">
+            <div class="m-2 row">
+                <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Rects Color:</label>
+                <div class="col-8 w-50">
+                    <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                           @bind-value="@FillColor"
+                           placeholder="Color"
+                           aria-label="Color">
+                </div>
+            </div>
+            <div class="m-2 row">
+                <dive class="col-6">
+                    <label for="rectwidth" class="form-label">Rect Width</label>
+
+                    <input id="rectwidth" type="text" style="width:100px;margin-right: 10px" class="form-control"
+                           @bind-value="@RectWidth"
+                           placeholder="Rect Width"
+                           aria-label="Rect Width">
+                </dive>
+                <div class="col-6">
+                    <label for="rectheight" class="form-label">Rect Height</label>
+
+                    <input id="rectheight" type="text" style="width:100px;margin-right: 10px" class="form-control"
+                           @bind-value="@RectHeight"
+                           placeholder="Rect Height"
+                           aria-label="Rect Height">
+                </div>
+
+            </div>
+         
+            <div class="w-75 input-group m-3">
+                <input type="text" class="form-control"
+                       @bind-value="@RectText"
+                       placeholder="Rectangle Text"
+                       aria-label="Rectangle Text"
+                       aria-describedby="button-addon2"
+                       @onkeyup="@(e => { if (e.Key == "Enter") { HandleButtonClick(); } })">
+
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2" @onclick="HandleButtonClick">Add</button>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="input-group my-2">
+
+                <textarea class="form-control mx-2 "  style="height:100px"
+                          @bind="@GptText" @bind:event="oninput"
+                          placeholder="Gpt Text"
+                          aria-label="Gpt Text"
+                          aria-describedby="button-addon2"
+                          @onkeyup="@(e => { if (e.Key == "Enter") { ExtractTitles(); } })">
+</textarea>
+
+            </div>
+            <div class="input-group m-1" style="width:350px">
+
+
+                <input class="form-control " list="datalistOptions" id="exampleDataList" @bind-value="ParentRectText" placeholder="Type to search...">
+                <datalist id="datalistOptions">
+                    @foreach (Rectangle rectangle in Rectangles)
+                    {
+                        <option value="@rectangle.Text" />
+                    }
+
+                </datalist>
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2" @onclick="SelectParent">Link</button>
+            </div>
+
+        </div>
+     
+    
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Class="mx-2" Color="ButtonColor.Secondary" @onclick="() => DownloadProjectFile() ">Download</Button>
+        <Button Class="mx-2" Color="ButtonColor.Secondary" @onclick="() => DownloadSvgAsImage() ">Download Image</Button>
+
+        <Button Class="mx-2" Color="ButtonColor.Secondary" @onclick="() => offcanvas?.HideAsync()">Close</Button>
+    </FooterTemplate>
+</Offcanvas>
 
 @code{
 
-    private ConfirmDialog dialog;
-
+    IJSObjectReference JSmodule;
+    private SKCanvasView? skiaView ;
+    ElementReference SvgCanvas;
+    private ConfirmDialog? dialog;
+    private Offcanvas? offcanvas;
+    private bool skiaCanvasView { get; set; } = false;
+    private SKTypeface typeface { get; set; }
 
     List<Rectangle> Rectangles = new List<Rectangle>();
     List<Line> Lines = new List<Line>();
 
+    private int RectId { get; set; } = 1;
 
-    private string InputText { get; set; }
-    private int InputWidth { get; set; } = 200;
-    private string FillColor { get; set; } = "bisque";
+    private string RectText { get; set; }
+    private string GptText { get; set; }
+    private string NewText { get; set; } = "";
+    private string parent { get; set; }
+    private int RectWidth { get; set; } = 200;
+    private int RectHeight { get; set; } = 40;
+    private string FillColor { get; set; } = "#Ffe4c4";
+
+    private bool IsSelecting = false;
+    private bool IsDragging = false;
+    private double SelectionStartX;
+    private double SelectionStartY;
+    private double SelectionWidth;
+    private double SelectionHeight;
+
+    private int canvasWidth { get; set; } = 1500;
+    private int canvasHeight { get; set; } = 1500;
+    public string canvasColor { get; set; } = "#cbbace";
+
+
+    public DirectoryInfo ProjectPath { get; set; }
+
+    public Project MainProject = new Project()
+        {
+
+            ProjectID = 1,
+            Name = "sNotes Project",
+            Packets = new List<Packet>(),
+            NotesCollection = new List<NotesCollection>(),
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        // download the font file
+        byte[] fontData = await httpClient.GetByteArrayAsync("Fonts/RobotoSlabFont.ttf");
+        // create an SKTypeface object from the font data
+
+        typeface = SKTypeface.FromData(SKData.CreateCopy(fontData));
+
+    }
+
+    void OnPaintSurface(SKPaintSurfaceEventArgs args)
+    {
+
+        SKImageInfo info = args.Info;
+        SKSurface surface = args.Surface;
+        SKCanvas canvas = args.Surface.Canvas;
+
+
+
+        DrawGraph(canvas);
+
+
+
+
+
+
+    }
+
+
+    private void StartSelection(MouseEventArgs e)
+    {
+
+        IsSelecting = true;
+        SelectionWidth = 0;
+        SelectionHeight = 0;
+        SelectionStartX = e.ClientX;
+        SelectionStartY = e.ClientY;
+
+
+    }
+
+    private void UpdateSelection(MouseEventArgs e)
+    {
+        if (IsSelecting)
+        {
+            SelectionWidth = e.ClientX - SelectionStartX;
+            SelectionHeight = e.ClientY - SelectionStartY;
+
+        }
+
+
+        // StateHasChanged();
+    }
+
+    private void EndSelection(MouseEventArgs e)
+    {
+
+
+        // Loop through all the SNRects and check if they intersect with the selection rectangle
+        foreach (var rect in Rectangles)
+        {
+            var rectX = rect.X;
+            var rectY = rect.Y;
+            var rectWidth = rect.Width;
+            var rectHeight = rect.Height;
+
+            var intersection = !(rectX > SelectionStartX + SelectionWidth ||
+                rectX + rectWidth < SelectionStartX ||
+                rectY > SelectionStartY + SelectionHeight ||
+                rectY + rectHeight < SelectionStartY);
+
+            if (intersection)
+            {
+                rect.Selected = true;
+            }
+            else
+            {
+                rect.Selected = false;
+            }
+        }
+        // IsDragging = true;
+        IsSelecting = false;
+        // SelectionWidth = 0;
+        // SelectionHeight = 0;
+        //StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            //for load JS File
+            JSmodule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./JSFiles/drdblazeJS.js");
+
+
+        }
+
+
+    }
+
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -79,21 +424,66 @@
     {
         // Handle button click event here
         Rectangles.Add(
-           new Rectangle(10, 10, InputWidth, 40)
+           new Rectangle(10, 10, RectWidth, RectHeight)
                {
-
+                   RectangleID = RectId,
                    Fill = FillColor,
-                   Text = InputText,
+                   Text = RectText,
 
                }
         );
+        MainProject.Packets.Add(
+                    new Packet { PacketID = RectId, Title = RectText, Selected = true, ProjectFK = 1 }
+                );
 
-        InputText = "";
+        RectId++;
+        RectText = "";
     }
 
 
     protected override void OnInitialized()
     {
+        ProjectPath = Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "project/collections");
+        Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "project/collections/0/bitmaps");
+        DirectoryInfo imagespth = Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "project/collections/0/images");
+
+        using (var bitmap = new SkiaSharp.SKBitmap(600, 400))
+        {
+            bitmap.Erase(SKColor.Parse("#FF7F50"));
+            using (var canvas = new SkiaSharp.SKCanvas(bitmap))
+            {
+                var paint = new SkiaSharp.SKPaint()
+                    {
+                        Color = SKColors.Black,
+                        TextSize = 20,
+                        IsAntialias = true,
+                        Typeface = SKTypeface.FromFamilyName("Arial")
+                    };
+                canvas.DrawText("Copyright © 2023 sNotes. All rights reserved.", 20, 100, paint);
+
+            }
+            using (var image = SkiaSharp.SKImage.FromBitmap(bitmap))
+            using (var data = image.Encode(SkiaSharp.SKEncodedImageFormat.Jpeg, 100))
+            {
+                using (var stream = File.OpenWrite(imagespth.FullName + "/blanc.jpeg"))
+                {
+                    data.SaveTo(stream);
+                }
+            }
+        }
+
+
+        NotesCollection defaultNC = new NotesCollection()
+            {
+                NotesCollectionID = 1,
+                ProjectFK = 1,
+                Title = "Default Collection",
+                Selected = true,
+                Note = new List<Note>()
+            };
+
+        MainProject.NotesCollection.Add(defaultNC);
+
 
     }
 
@@ -143,9 +533,6 @@
             // do whatever
         }
 
-
-      
-
     }
     private async Task RemoveRectangle(Rectangle rectangle)
     {
@@ -157,24 +544,477 @@
         if (confirmation)
         {
             // do whatever
+            MainProject.Packets.Remove(MainProject.Packets.Where(r => r.PacketID == rectangle.RectangleID).FirstOrDefault());
             Rectangles.Remove(rectangle);
+            await modal?.HideAsync();
         }
         else
         {
             // do whatever
         }
 
-      
-
-
 
 
     }
+    private void RenameRectangle()
+    {
+        ParentRect = Rectangles.FirstOrDefault(r => r.Text == ParentRectText);
+        foreach (Rectangle rect in Rectangles.Where(s => s.Selected == true).ToList())
+        {
+
+            Lines.Add(
+                    new Line(ParentRect.MC, rect.MC)
+                        {
+                            Stroke = "black",
+                            StrokeWidth = 2,
+                            Selected = false
+                        }
+                );
+        }
+
+
+    }
+
+
+    private Modal modal;
+
+    private async Task OnShowModalClick(Rectangle rectangle)
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("Rectangle", rectangle);
+        parameters.Add("OnclickCallback", EventCallback.Factory.Create<Rectangle>(this, RemoveRectangle));
+        await modal.ShowAsync<RectModal>(title: "Rectangle Details", parameters: parameters);
+    }
+
+    private string? message;
+
+    private void ShowDTMessage(MouseEventArgs e) => message = $"The current DT is:  {DateTime.Now}.";
+
+    private async Task OnHideModalClick()
+    {
+        await modal?.HideAsync();
+    }
+
+
     private void StatChanged()
     {
-
         StateHasChanged();
     }
 
+    // Unregister the drop zone events
+    public async ValueTask DisposeAsync()
+    {
+
+        if (JSmodule != null)
+        {
+            await JSmodule.DisposeAsync();
+        }
+    }
+
+
+    private double startX;
+    private double startY;
+    private async Task MouseDown(MouseEventArgs e)
+    {
+
+        IsDragging = true;
+        startX = e.ClientX;
+        startY = e.ClientY;
+
+    }
+
+    private async Task MouseUp(MouseEventArgs e)
+    {
+        IsDragging = false;
+
+    }
+    private async Task MouseMove(MouseEventArgs e)
+    {
+        if (IsDragging)
+        {
+            double deltaX = e.ClientX - startX;
+            double deltaY = e.ClientY - startY;
+            SelectionStartX += (float)deltaX;
+            SelectionStartY += (float)deltaY;
+            foreach (Rectangle rect in Rectangles.Where(s => s.Selected == true).ToList())
+            {
+                rect.X += (float)deltaX;
+                rect.Y += (float)deltaY;
+            }
+
+            startX = e.ClientX;
+            startY = e.ClientY;
+        }
+
+    }
+
+    private void ExtractTitles()
+    {
+        string pattern = @"^(.*?):";
+
+
+        string[] paragraphs = GptText.Split(new[] { "\r\n\r\n", "\n\n" }, StringSplitOptions.None);
+        int rectYPos=30;
+        foreach (string paragraph in paragraphs)
+        {
+            Match match = Regex.Match(paragraph, pattern);
+            if (match.Success)
+            {
+                string result = match.Groups[1].Value;
+
+                // Handle button click event here
+                Rectangles.Add(
+                   new Rectangle(30, rectYPos, RectWidth, RectHeight)
+                       {
+                           RectangleID = RectId,
+                           Fill = FillColor,
+                           Text = result,
+
+                       }
+                );
+                MainProject.Packets.Add(
+                    new Packet { PacketID= RectId, Title = result, Selected = true, ProjectFK = 1 }
+                );
+                rectYPos += 45;
+                RectId++;
+                //Console.WriteLine(result);
+            }
+        }
+
+        GptText = "";
+    }
+
+    private string ParentRectText { get; set; }
+    private Rectangle ParentRect { get; set; }
+    private Packet ParentPacket { get; set; }
+    private Packet ChildPacket { get; set; }
+
+    private void SelectParent()
+    {
+        ParentRect = Rectangles.FirstOrDefault(r => r.Text == ParentRectText);
+        ParentPacket = MainProject.Packets.FirstOrDefault(p => p.PacketID == ParentRect.RectangleID);
+
+        foreach (Rectangle rect in Rectangles.Where(s => s.Selected == true).ToList())
+        {
+            ChildPacket = MainProject.Packets.FirstOrDefault(p => p.PacketID == rect.RectangleID);
+            Lines.Add(
+                    new Line(ParentRect.MC, rect.MC)
+                        {
+                            Stroke = "#000000",
+                            StrokeWidth = 2,
+                            Selected = false
+                        }
+                );
+
+            ChildPacket.ParentID = ParentPacket.PacketID;
+            ChildPacket.Parent = null;
+            ChildPacket.Selected = false;
+        }
+
+
+    }
+
+
+    private async Task ShowOffcanvasAsync()
+    {
+        await offcanvas?.ShowAsync();
+    }
+    private async Task HideOffcanvasAsync()
+    {
+        await offcanvas?.HideAsync();
+    }
+
+
+
+    #region Download Project
+
+    private static readonly JsonSerializerOptions ProjectOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            WriteIndented = true,
+            IgnoreReadOnlyProperties = true,
+        };
+
+    private static readonly JsonSerializerOptions NoteCardsOptions = new()
+        {
+            WriteIndented = true,
+        };
+
+    public byte[] fileArray;
+    private async Task<byte[]> BuildProjectPackage()
+    {
+        var packageFilePath = AppDomain.CurrentDomain.BaseDirectory + "Package/package.zip";
+
+        if (File.Exists(packageFilePath))
+        {
+            File.Delete(packageFilePath);
+        }
+
+
+        // Create the package directory
+        Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "Package");
+
+
+        // Create the meta object and serialize it to a byte array
+        var metaObject = new MetaObject
+            {
+                Version = "1.0"
+            };
+        byte[] metaJsonBytes = SerializeMetaObject(metaObject);
+
+
+        // Write the serialized meta object to a file
+        File.WriteAllBytes(ProjectPath.Parent.FullName + "/meta.json" , metaJsonBytes);
+
+
+        // Serialize the full project object to a file
+
+        await SerializeProjectAsync(MainProject);
+
+
+        // Serialize the list of note cards to a file
+        List<NotePacket> allNoteCards = new List<NotePacket>();
+        if (allNoteCards != null)
+        {
+            await SerializeNoteCardsAsync(allNoteCards);
+        }
+
+        // Create the package file
+
+
+        ZipFile.CreateFromDirectory(ProjectPath.Parent.FullName, packageFilePath);
+
+        // Read the package file into a byte array
+        using (var packageFile = new FileStream(packageFilePath, FileMode.Open))
+        {
+            fileArray = new byte[packageFile.Length];
+            await packageFile.ReadAsync(fileArray, 0, (int)packageFile.Length);
+        }
+
+
+        return fileArray;
+    }
+
+
+    public async Task DownloadProjectFile()
+    {
+        try
+        {
+
+
+            byte[] ProjectArray = await BuildProjectPackage();
+
+
+            var fileName = $"{MainProject.Name}.snotes";
+
+            await JSmodule.InvokeVoidAsync("blazorDownloadFile", fileName, "application/zip", ProjectArray);
+
+            // Delete the package file
+            var packageFilePath = AppDomain.CurrentDomain.BaseDirectory + "Package/package.zip" ;
+
+
+            if (Path.HasExtension(packageFilePath))
+            {
+                File.Delete(packageFilePath);
+            }
+
+
+        }
+        catch (Exception)
+        {
+
+        }
+
+
+
+
+    }
+
+    private byte[] SerializeMetaObject(MetaObject metaObject)
+    {
+        return JsonSerializer.SerializeToUtf8Bytes(metaObject);
+    }
+
+    private async Task SerializeProjectAsync(Project project)
+    {
+        var jsonProjectFilePath = ProjectPath.Parent.FullName + "/jsonFile.json";
+        await using (FileStream createProjectStream = File.Create(jsonProjectFilePath))
+        {
+            await JsonSerializer.SerializeAsync<Project>(createProjectStream, project, ProjectOptions);
+        }
+    }
+    private async Task SerializeNoteCardsAsync(List<NotePacket> noteCards)
+    {
+        var jsonNoteCardsFilePath = ProjectPath.Parent.FullName + "/notecards.json" ;
+        await using (FileStream createNotecardsStream = File.Create(jsonNoteCardsFilePath))
+        {
+            await JsonSerializer.SerializeAsync<List<NotePacket>>(createNotecardsStream, noteCards, NoteCardsOptions);
+        }
+    }
+
+
+
+    #endregion
+
+    record MetaObject
+    {
+        public string Version { get; init; } = "1.0";
+    }
+
+
+    private void DrawGraph(SKCanvas canvas )
+    {
+
+        SKColor CanvasSKColor = SKColor.Parse(canvasColor);
+        canvas.Clear(SKColors.Transparent);
+        SKPaint canvaspaint = new SKPaint
+            {
+                Color = CanvasSKColor,
+            };
+        canvas.DrawPaint(canvaspaint);
+
+        SKPaint linepaint = new SKPaint
+            {
+                IsAntialias = true
+            };
+
+        foreach (Line line in Lines)
+        {
+
+            linepaint.Color = SKColor.Parse(line.Stroke);
+            linepaint.StrokeWidth = line.StrokeWidth;
+            canvas.DrawLine(line.Point1.Position, line.Point2.Position, linepaint);
+
+        }
+
+
+
+        foreach (Rectangle rectangle in Rectangles)
+        {
+            // Parse the SVG properties into variables
+            float x = rectangle.X; // Replace with your value from "@Rectangle.X"
+            float y = rectangle.Y; // Replace with your value from "@Rectangle.Y"
+            float width = rectangle.Width; // Replace with your value from "@Rectangle.Width"
+            float height = rectangle.Height; // Replace with your value from "@Rectangle.Height"
+            float rx = 10;
+            float ry = 10;
+            SKColor strokeColor = SKColors.Black;
+            float strokeWidth = 2;
+            SKColor fillColor = SKColor.Parse(rectangle.Fill); // Replace with your value from "@Rectangle.Fill"
+
+
+            string text = rectangle.Text; // Replace with your desired text
+            SKColor textColor = SKColors.Black; // Replace with your desired text color
+
+            // Create a new paint object for the stroke
+            SKPaint strokePaint = new SKPaint
+                {
+                    Color = strokeColor,
+                    StrokeWidth = strokeWidth,
+                    IsStroke = true,
+                    IsAntialias = true
+                };
+
+            // Create a new paint object for the fill
+            SKPaint fillPaint = new SKPaint
+                {
+                    Color = fillColor,
+                    IsAntialias = true
+                };
+
+            // Create a new paint object for the text
+            SKPaint textPaint = new SKPaint
+                {
+                    Color = textColor,
+                    TextSize = 15, // Replace with your desired text size
+                    TextAlign = SKTextAlign.Center,
+                    IsAntialias = true,
+                    Typeface = typeface, // Set the typeface of the paint object
+
+
+                };
+
+
+            // Draw the rectangle with the specified properties
+            SKRect rect = new SKRect(x, y, x + width, y + height);
+            canvas.DrawRoundRect(rect, rx, ry, fillPaint);
+            canvas.DrawRoundRect(rect, rx, ry, strokePaint);
+
+
+            // Draw the text in the center of the rectangle
+            SKRect textBounds = new SKRect();
+            textPaint.MeasureText(text, ref textBounds);
+            float textX = x + (width / 2);
+            float textY = rectangle.MC.Position.Y;
+
+            if (textBounds.Width < rect.Width)
+            {
+                canvas.DrawText(text, textX, textY + 5, textPaint);
+
+            }
+            else
+            {
+                try
+                {
+                    textY = rectangle.TM.Position.Y + textPaint.FontSpacing-4;
+                    string[] txtlines = text.Split("\n");
+                    foreach (string txtline in txtlines)
+                    {
+                        
+                        canvas.DrawText(txtline, textX, textY, textPaint);
+                        textY += textPaint.FontSpacing-4;
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine(ex.Message);
+                }
+
+            }
+
+        }
+
+    }
+
+    private async Task DownloadSvgAsImage()
+    {
+
+        // Create a new bitmap with a width and height of 500 pixels
+        SKBitmap bitmap = new SKBitmap(canvasWidth, canvasHeight);
+
+        SKColor CanvasSKColor = SKColor.Parse(canvasColor);
+
+
+
+        // Create a new canvas with the bitmap
+        using (SKCanvas canvas = new SKCanvas(bitmap))
+        {
+            DrawGraph(canvas);
+
+
+
+        }
+
+        // Convert the bitmap to a byte array
+        byte[] bytes = bitmap.Bytes;
+
+        // Convert the bitmap to a JPEG file
+        byte[] jpegData = null;
+        using (SKImage image = SKImage.FromBitmap(bitmap))
+        using (SKData data = image.Encode(SKEncodedImageFormat.Jpeg, 100))
+        {
+            jpegData = data.ToArray();
+        }
+
+        // Save the JPEG file to disk
+        await JSmodule.InvokeVoidAsync("blazorDownloadFile", "output.jpg", "image/jpeg", jpegData);
+
+        //File.WriteAllBytes("output.jpg", jpegData);
+    }
+
+  
 }
 

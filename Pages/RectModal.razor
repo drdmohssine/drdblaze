@@ -1,0 +1,66 @@
+@using drdblaze.Shapes;
+<div class="row">
+
+    <div class="w-75 input-group m-1">
+
+        <textarea class="form-control" id="rect-Textarea1"
+         @bind="@Rectangle.Text"
+        rows="3"></textarea>
+    </div>
+
+</div>
+
+<div class="m-2 row">
+
+
+    <textarea class="form-control" style="background-color:@Rectangle.Fill;resize:none;width:200px;white-space: pre-line;" readonly disabled id="rect-Textarea2"
+                  @bind="@Rectangle.Text"
+                  rows="3"></textarea>
+  
+
+</div>
+<div class="m-2 row">
+    <dive class="col-6">
+        <label for="rectwidth" class="form-label">Rect Width</label>
+
+        <input id="rectwidth" type="text" style="width:100px;margin-right: 10px" class="form-control"
+               @bind-value="@Rectangle.Width"
+               placeholder="Rect Width"
+               aria-label="Rect Width">
+    </dive>
+    <div class="col-6">
+        <label for="rectheight" class="form-label">Rect Height</label>
+
+        <input id="rectheight" type="text" style="width:100px;margin-right: 10px" class="form-control"
+               @bind-value="@Rectangle.Height"
+               placeholder="Rect Height"
+               aria-label="Rect Height">
+    </div>
+
+</div>
+
+<Button class="m-2" Color="ButtonColor.Danger" Type="ButtonType.Button" @onclick="(e) =>RemoveRectangle(Rectangle)">
+    Remove Rectangle
+</Button>
+@code {
+   
+    [Parameter] public Rectangle Rectangle { get; set; }
+
+    [Parameter] public EventCallback<Rectangle> OnClickCallback { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // get employee with {EmployeeId} from DB
+       // employee = new Employee { FirstName = "Vikram", LastName = "Reddy" };
+        base.OnInitialized();
+    }
+
+    private async Task RemoveRectangle(Rectangle rectangle)
+    {
+
+        await OnClickCallback.InvokeAsync(rectangle);
+
+
+    }
+
+}

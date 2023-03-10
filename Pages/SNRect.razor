@@ -2,17 +2,30 @@
 @using drdblaze.Shapes;
 
 
-<rect style="position: relative;z-index:1" @ondblclick="(e) => SelectRectangle(e,Rectangle)" @onclick="() => {Rectangle.Selected = !Rectangle.Selected; }"
+<rect style="position: relative;z-index:1"
+     
+                @onclick="() => {Rectangle.Selected = !Rectangle.Selected; }"
                 @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
               x="@Rectangle.X" y="@Rectangle.Y" width="@Rectangle.Width" height="@Rectangle.Height"
               rx="10" ry="10" stroke-width="2" stroke="black" fill="@Rectangle.Fill" >
         
           
-          </rect>
+  </rect>
           
-<text style="@((Rectangle.Selected) ? "pointer-events: none;font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" :"font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" )" x="@Rectangle.MC.Position.X" y="@Rectangle.MC.Position.Y"
-      text-anchor="middle" dominant-baseline="middle">
-      @Rectangle.Text</text>
+
+    <foreignObject @ondblclick="(e) => SelectRectangle(e,Rectangle)" 
+        x="@(Rectangle.TL.Position.X)" 
+        y="@(Rectangle.TL.Position.Y)" 
+        width="@(Rectangle.Width )" height="@(Rectangle.Height )">
+        <div id="rect-@Rectangle.RectangleID" xmlns="http://www.w3.org/1999/xhtml" class="m-1"
+             style="@((Rectangle.Selected) ? "pointer-events: none;font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" :"font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" )">
+
+        <p style="text-align:center;vertical-align:middle;font-size:15px;line-height:15px"> @Rectangle.Text </p>
+
+    </div>
+    </foreignObject>
+
+
 
 
 
@@ -27,9 +40,7 @@
     <circle cx="@Rectangle.BM.Position.X" cy="@Rectangle.BM.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.BM)" />
     <circle cx="@Rectangle.BR.Position.X" cy="@Rectangle.BR.Position.Y" r="5" fill="black" @onclick="(e)=>SelectPoint(e,Rectangle.BR)" />
 
-
-
-
+  
 }
 
 
@@ -48,7 +59,6 @@
     public EventCallback<Point> SelectedPoint { get; set; }
     [Parameter]
     public EventCallback<Rectangle> RectBack{ get; set; }
-
 
 
     private bool isDragging;
@@ -98,32 +108,6 @@
         await OnMouseMove.InvokeAsync();
     }
 
-    //private void OnMouseDown(MouseEventArgs e)
-    //{
-    //    Console.WriteLine(Rectangle.RectPoints.ML.X.ToString());
-    //    isDragging = true;
-    //    startX = e.ClientX;
-    //    startY = e.ClientY;
-    //}
 
-    //private void OnMouseUp(MouseEventArgs e)
-    //{
-    //    isDragging = false;
-    //    Console.WriteLine(Rectangle.RectPoints.ML.X.ToString());
-    //    StateHasChanged();
-    //}
-
-    //private void OnMouseMove(MouseEventArgs e)
-    //{
-    //    if (isDragging)
-    //    {
-    //        double deltaX = e.ClientX - startX;
-    //        double deltaY = e.ClientY - startY;
-    //        Rectangle.X += (float)deltaX;
-    //        Rectangle.Y += (float)deltaY;
-    //        startX = e.ClientX;
-    //        startY = e.ClientY;
-    //    }
-    //}
 
 }
