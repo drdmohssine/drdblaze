@@ -16,7 +16,7 @@
 {
 
 
-    <div style="width:@(canvasWidth)px;height:@(canvasWidth)px;background-color:@(canvasColor) ;overflow:auto">
+    <div style="width:@(canvasWidth)px;height:@(canvasHeight)px;background-color:@(canvasColor) ;overflow:auto">
 
 
                     <SKCanvasView @ref="skiaView" OnPaintSurface="OnPaintSurface" IgnorePixelScaling="true"
@@ -29,18 +29,18 @@
 
 
                     </SKCanvasView>
-                </div>
+      </div>
 
 
 }
 else
 {
-    <div @ondblclick="() => {IsSelecting = !IsSelecting;}"
-         style="width:@(canvasWidth)px;height:@(canvasWidth)px;background-color:@(canvasColor) ;overflow:auto">
+    <div  @ondblclick="() => {IsSelecting = !IsSelecting;}"
+         style="width:100vw;height:100vh;background-color:@(canvasColor);overflow:auto;">
 
         @if (IsSelecting)
         {
-            <svg id="SvgCanvas" viewBox="0 0 1570 2000"
+            <svg id="SvgCanvas" style="border: 1px solid black;" x="0" y="0" width="@canvasWidth" height="@canvasHeight"
          @onmousedown="StartSelection" @onmouseup="EndSelection" @onmousemove="UpdateSelection" @onmouseleave="EndSelection">
 
 
@@ -75,7 +75,7 @@ else
         }
         else
         {
-            <svg id="SvgCanvas" viewBox="0 0 1570 2000">
+            <svg id="SvgCanvas" style="border: 1px solid black;" x="0" y="0" width="@canvasWidth" height="@canvasHeight">
 
 
                 <rect style="position:relative;z-index:1"
