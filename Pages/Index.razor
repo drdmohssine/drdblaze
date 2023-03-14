@@ -35,7 +35,7 @@
 }
 else
 {
-    <div  @ondblclick="() => {IsSelecting = !IsSelecting;}"
+    <div  @onclick="() => {IsSelecting = true;}" @ondblclick="() => {IsSelecting = false;}"
          style="width:100vw;height:100vh;background-color:@(canvasColor);overflow:auto;">
 
         @if (IsSelecting)
@@ -43,6 +43,7 @@ else
             <svg id="SvgCanvas" style="border: 1px solid black;" x="0" y="0" width="@canvasWidth" height="@canvasHeight"
          @onmousedown="StartSelection" @onmouseup="EndSelection" @onmousemove="UpdateSelection" @onmouseleave="EndSelection">
 
+              
 
                 <rect style="position:relative;z-index:1"
                       x="@SelectionStartX" y="@SelectionStartY" width="@SelectionWidth" height="@SelectionHeight"
@@ -50,7 +51,6 @@ else
 
 
                 </rect>
-
 
                 @foreach (Line line in Lines)
                 {
@@ -77,6 +77,23 @@ else
         {
             <svg id="SvgCanvas" style="border: 1px solid black;" x="0" y="0" width="@canvasWidth" height="@canvasHeight">
 
+                @if (IsDragging)
+                {
+                    <line x1="@SelectionStartX"
+                          y1="0"
+                          x2="@SelectionStartX"
+                          y2="1500"
+                          stroke="gray"
+                          stroke-width="1" />
+
+                    <line x1="0"
+                          y1="@SelectionStartY"
+                          x2="1500"
+                          y2="@SelectionStartY"
+                          stroke="gray"
+                          stroke-width="1" />
+                }
+            
 
                 <rect style="position:relative;z-index:1"
               @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
@@ -85,6 +102,8 @@ else
 
 
                 </rect>
+
+            
 
 
                 @foreach (Line line in Lines)
@@ -343,22 +362,25 @@ else
 
     private void StartSelection(MouseEventArgs e)
     {
+        if(IsDragging == false)
+        {
+            IsSelecting = true;
+            SelectionWidth = 0;
+            SelectionHeight = 0;
+            SelectionStartX = e.OffsetX;
+            SelectionStartY = e.OffsetY;
+        }
 
-        IsSelecting = true;
-        SelectionWidth = 0;
-        SelectionHeight = 0;
-        SelectionStartX = e.ClientX;
-        SelectionStartY = e.ClientY;
 
-
+ 
     }
 
     private void UpdateSelection(MouseEventArgs e)
     {
         if (IsSelecting)
         {
-            SelectionWidth = e.ClientX - SelectionStartX;
-            SelectionHeight = e.ClientY - SelectionStartY;
+            SelectionWidth = e.OffsetX - SelectionStartX;
+            SelectionHeight = e.OffsetY - SelectionStartY;
 
         }
 
@@ -393,7 +415,7 @@ else
             }
         }
         // IsDragging = true;
-        IsSelecting = false;
+       IsSelecting = false;
         // SelectionWidth = 0;
         // SelectionHeight = 0;
         //StateHasChanged();
@@ -618,8 +640,8 @@ else
     {
 
         IsDragging = true;
-        startX = e.ClientX;
-        startY = e.ClientY;
+        startX = e.OffsetX;
+        startY = e.OffsetY;
 
     }
 
@@ -632,8 +654,8 @@ else
     {
         if (IsDragging)
         {
-            double deltaX = e.ClientX - startX;
-            double deltaY = e.ClientY - startY;
+            double deltaX = e.OffsetX - startX;
+            double deltaY = e.OffsetY - startY;
             SelectionStartX += (float)deltaX;
             SelectionStartY += (float)deltaY;
             foreach (Rectangle rect in Rectangles.Where(s => s.Selected == true).ToList())
@@ -642,8 +664,8 @@ else
                 rect.Y += (float)deltaY;
             }
 
-            startX = e.ClientX;
-            startY = e.ClientY;
+            startX = e.OffsetX;
+            startY = e.OffsetY;
         }
 
     }
