@@ -38,7 +38,10 @@
     </div>
 
 </div>
-
+<div class="ms-3 form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="flexSwitchCheck" @bind-value="@Rectangle.Selected" />
+    <label class="form-check-label" for="flexSwitchCheck">Selected</label>
+</div>
 <Button class="m-2" Color="ButtonColor.Danger" Type="ButtonType.Button" @onclick="(e) =>RemoveRectangle(Rectangle)">
     Remove Rectangle
 </Button>
@@ -62,5 +65,7 @@
 
 
     }
+
+
 
 }

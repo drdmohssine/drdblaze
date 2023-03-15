@@ -4,7 +4,7 @@
 
 <rect style="position: relative;z-index:1"
      
-                @onclick="() => {Rectangle.Selected = !Rectangle.Selected; }"
+              
                 @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
               x="@Rectangle.X" y="@Rectangle.Y" width="@Rectangle.Width" height="@Rectangle.Height"
               rx="10" ry="10" stroke-width="2" stroke="black" fill="@Rectangle.Fill" >
@@ -13,14 +13,18 @@
   </rect>
           
 
-    <foreignObject @ondblclick="(e) => SelectRectangle(e,Rectangle)" 
+    <foreignObject 
         x="@(Rectangle.TL.Position.X)" 
         y="@(Rectangle.TL.Position.Y)" 
         width="@(Rectangle.Width )" height="@(Rectangle.Height )">
+          
+
         <div id="rect-@Rectangle.RectangleID" xmlns="http://www.w3.org/1999/xhtml" class="m-1"
              style="@((Rectangle.Selected) ? "pointer-events: none;font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" :"font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" )">
-
+          
         <p style="text-align:center;vertical-align:middle;font-size:15px;line-height:15px"> @Rectangle.Text </p>
+
+        <Button Color="ButtonColor.Primary" @onclick="(e) => SelectRectangle(e,Rectangle)" Style="position:absolute;top:2px;right:2px;"></Button>
 
     </div>
     </foreignObject>
@@ -108,6 +112,8 @@
         await OnMouseMove.InvokeAsync();
     }
 
+    private Modal modal;
 
 
+   
 }

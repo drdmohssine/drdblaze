@@ -77,35 +77,24 @@ else
         {
             <svg id="SvgCanvas" style="border: 1px solid black;" x="0" y="0" width="@canvasWidth" height="@canvasHeight">
 
-                @if (IsDragging)
-                {
-                    <line x1="@SelectionStartX"
-                          y1="0"
-                          x2="@SelectionStartX"
-                          y2="1500"
-                          stroke="gray"
-                          stroke-width="1" />
 
-                    <line x1="0"
-                          y1="@SelectionStartY"
-                          x2="1500"
-                          y2="@SelectionStartY"
-                          stroke="gray"
-                          stroke-width="1" />
+                @for (int x = 0; x <= canvasWidth; x += 50)
+                {
+                    <line x1="@x" y1="0" x2="@x" y2="@canvasHeight" style="stroke: #999; stroke-width: 1;" />
                 }
-            
+                @for (int y = 0; y <= canvasHeight; y += 50)
+                {
+                    <line x1="0" y1="@y" x2="@canvasWidth" y2="@y" style="stroke: #999; stroke-width: 1;" />
+                }
+
 
                 <rect style="position:relative;z-index:1"
-              @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
+                      @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
                       x="@SelectionStartX" y="@SelectionStartY" width="@SelectionWidth" height="@SelectionHeight"
                       rx="10" ry="10" stroke-width="2" stroke="black" fill="transparent">
-
-
                 </rect>
 
-            
-
-
+ 
                 @foreach (Line line in Lines)
                 {
                     <SNLine LineBack="RemoveLine" Line="line" Point1="line.Point1" Point2="line.Point2" StrokeColor="@line.Stroke" StrokeWidth="@line.StrokeWidth">
@@ -118,18 +107,12 @@ else
 
                     </SNRect>
 
-
                 }
-
-
 
 
             </svg>
 
         }
-
-
-
 
     </div>
 
@@ -578,6 +561,7 @@ else
 
 
     }
+    
     private void RenameRectangle()
     {
         ParentRect = Rectangles.FirstOrDefault(r => r.Text == ParentRectText);
