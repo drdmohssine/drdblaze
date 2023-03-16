@@ -87,12 +87,8 @@ else
                     <line x1="0" y1="@y" x2="@canvasWidth" y2="@y" style="stroke: #999; stroke-width: 1;" />
                 }
 
+        
 
-                <rect style="position:relative;z-index:1"
-                      @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
-                      x="@SelectionStartX" y="@SelectionStartY" width="@SelectionWidth" height="@SelectionHeight"
-                      rx="10" ry="10" stroke-width="2" stroke="black" fill="transparent">
-                </rect>
 
  
                 @foreach (Line line in Lines)
@@ -108,6 +104,15 @@ else
                     </SNRect>
 
                 }
+
+
+                        <rect style="position:relative;z-index:5"
+                @onmousedown:stopPropagation @onmouseup:stopPropagation @onmousemove:stopPropagation @onmouseleave:stopPropagation
+              @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
+                      x="@SelectionStartX" y="@SelectionStartY" width="@SelectionWidth" height="@SelectionHeight"
+                      rx="10" ry="10" stroke-width="2" stroke="black" fill="transparent">
+                </rect>
+
 
 
             </svg>
