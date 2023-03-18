@@ -38,9 +38,9 @@
     {
         navItems = new List<NavItem>
         {
-            new NavItem { Id = "1", Href = "/", IconName = IconName.HouseDoorFill, Text = "Home"},
+            new NavItem { Id = "1", Href = AppDomain.CurrentDomain.BaseDirectory , IconName = IconName.HouseDoorFill, Text = "Home"},
             new NavItem { Id = "2", IconName = IconName.Tools, Text = "Tools", IconColor = IconColor.Primary },
-            new NavItem { Id = "3", Href = "/gptextractor", IconName = IconName.Diagram3, Text = "GPT Extractor", ParentId="2"},
+            new NavItem { Id = "3", Href = AppDomain.CurrentDomain.BaseDirectory +"gptextractor", IconName = IconName.Diagram3, Text = "GPT Extractor", ParentId="2"},
 
 
         };
