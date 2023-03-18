@@ -1,4 +1,5 @@
 ﻿@page "/gptextractor"
+@page "/drdblaze/gptextractor"
 @using System.Text.RegularExpressions;
 @using SkiaSharp;
 @using System.Text.Json;
@@ -59,7 +60,7 @@ else
 
                 @foreach (Rectangle rect in Rectangles)
                 {
-                    <SNRect RectBack="OnShowModalClick" Rectangle="@rect" SelectedPoint="SelectPoint" OnMouseDown="StatChanged" OnMouseMove="StatChanged" OnMouseUp="StatChanged">
+                    <SNRect TextColor = "@txtColor" RectBack="OnShowModalClick" Rectangle="@rect" SelectedPoint="SelectPoint" OnMouseDown="StatChanged" OnMouseMove="StatChanged" OnMouseUp="StatChanged">
 
                     </SNRect>
 
@@ -98,7 +99,7 @@ else
 
                 @foreach (Rectangle rect in Rectangles)
                 {
-                    <SNRect RectBack="OnShowModalClick" Rectangle="@rect" SelectedPoint="SelectPoint" OnMouseDown="StatChanged" OnMouseMove="StatChanged" OnMouseUp="StatChanged">
+                    <SNRect TextColor = "@txtColor" RectBack="OnShowModalClick" Rectangle="@rect" SelectedPoint="SelectPoint" OnMouseDown="StatChanged" OnMouseMove="StatChanged" OnMouseUp="StatChanged">
 
                     </SNRect>
 
@@ -157,25 +158,38 @@ else
 
         <div class="card">
             <div class="m-2 row">
-                <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Canvas Color:</label>
-                <div class="col-8 w-50">
-                    <input id="coloraddon" type="color" class="form-control my-2 p-1 "
-                           @bind-value="@canvasColor"
-                           placeholder="Color"
-                           aria-label="Color">
+                 <div class="col-6">
+                    <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Canvas Color:</label>
+                    <div class="col-8 w-50">
+                        <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                               @bind-value="@canvasColor"
+                               placeholder="Color"
+                               aria-label="Color">
+                    </div>
                 </div>
+
+                <div class="col-6">
+                    <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Text Color:</label>
+                    <div class="col-8 w-50">
+                        <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                               @bind-value="@txtColor"
+                               placeholder="Color"
+                               aria-label="Color">
+                    </div>
+                </div>
+
             </div>
 
 
             <div class="m-2 row ">
-                <dive class="col-6">
+                <div class="col-6">
                     <label for="Canvaswidth" class="form-label">Canvas Width</label>
 
                     <input id="Canvaswidth" type="text" style="width:100px;margin-right: 10px" class="form-control"
                            @bind-value="@canvasWidth"
                            placeholder="Canvas Width"
                            aria-label="Canvas Width">
-                </dive>
+                </div>
                 <div class="col-6">
                     <label for="Canvasheight" class="form-label">Canvas Height</label>
 
@@ -187,6 +201,71 @@ else
 
             </div>
 
+           
+           
+        </div>
+
+        <div class="card form-check">
+            <div class="row mx-2">
+                <div class="col-md-6">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="TLC" value="TLC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                    <label class="form-check-label" for="TLC">
+                       TLC
+                    </label>
+                </div>
+                <div class="col-md-6">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="TRC" value="TRC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                    <label class="form-check-label" for="TRC">
+                        TRC
+                    </label>
+                </div>
+            </div>
+
+            <div class="row mx-2">
+                <div class="col-md-6">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="BLC" value="BLC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                    <label class="form-check-label" for="BLC">
+                       BLC
+                    </label>
+                </div>
+                <div class="col-md-6">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="BRC" value="BRC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                    <label class="form-check-label" for="BRC">
+                       BRC
+                    </label>
+                </div>
+            </div>
+
+
+           <div class="row mx-2">
+                <div class="col-md-6">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="H1L" value="H1L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                    <label class="form-check-label" for="H1L">
+                        H1L
+                    </label>
+                </div>
+                <div class="col-md-6">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="H2L" value="H2L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                    <label class="form-check-label" for="H2L">
+                        H2L
+                    </label>
+                </div>
+            </div>
+
+           <div class="row mx-2">
+                <div class="col-md-6">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="V1L" value="V1L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                    <label class="form-check-label" for="V1L">
+                        V1L
+                    </label>
+                </div>
+                <div class="col-md-6">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="V2L" value="V2L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                    <label class="form-check-label" for="V2L">
+                        V2L
+                    </label>
+                </div>
+            </div>
 
         </div>
 
@@ -282,6 +361,8 @@ else
     private bool skiaCanvasView { get; set; } = false;
     private SKTypeface typeface { get; set; }
 
+    private string SelectedShapeOption { get; set; }
+
     List<Rectangle> Rectangles = new List<Rectangle>();
     List<Line> Lines = new List<Line>();
 
@@ -305,7 +386,7 @@ else
     private int canvasWidth { get; set; } = 1500;
     private int canvasHeight { get; set; } = 1500;
     public string canvasColor { get; set; } = "#cbbace";
-
+    public string txtColor { get; set; } = "#000000";
 
     public DirectoryInfo ProjectPath { get; set; }
 
@@ -447,6 +528,7 @@ else
 
         RectId++;
         RectText = "";
+
     }
 
 
@@ -816,7 +898,7 @@ else
                 MainProject.Name = Rectangles[0].Text;
 
             }
-         
+
             byte[] ProjectArray = await BuildProjectPackage();
 
 
@@ -919,7 +1001,7 @@ else
 
 
             string text = rectangle.Text; // Replace with your desired text
-            SKColor textColor = SKColors.Black; // Replace with your desired text color
+            SKColor textColor = SKColor.Parse(txtColor); // Replace with your desired text color
 
             // Create a new paint object for the stroke
             SKPaint strokePaint = new SKPaint
@@ -1031,6 +1113,237 @@ else
         //File.WriteAllBytes("output.jpg", jpegData);
     }
 
+    private void Set(ChangeEventArgs e)
+    {
+        try
+        {
+            SelectedShapeOption = e?.Value?.ToString();
+            int w = 1;
 
+            List<Rectangle> SelectedRectangles = Rectangles.Where(s => s.Selected == true).ToList();
+            List<Rectangle> FirstList = SelectedRectangles.Take(SelectedRectangles.Count / 2).ToList();
+            List<Rectangle> SecondList = SelectedRectangles.Skip(SelectedRectangles.Count / 2).ToList();
+
+            if (SelectedShapeOption == "TLC")
+            {
+
+                float TWidths;
+                foreach (Rectangle rect in FirstList)
+                {
+
+                    rect.X += (RectWidth + 5) * w;
+                    rect.Y = SecondList[0].Y;
+                    w++;
+
+                }
+
+                if (SelectedRectangles.Count % 2 == 0)
+                {
+                    foreach (Rectangle rect in SecondList)
+                    {
+
+                        rect.X = FirstList[0].X;
+                        rect.Y += 45;
+
+
+                    }
+                }
+
+
+                w = 1;
+            };
+
+
+            if (SelectedShapeOption == "TRC")
+            {
+
+                float TWidths;
+                foreach (Rectangle rect in FirstList)
+                {
+
+                    rect.X += (RectWidth + 5) * w;
+                    rect.Y = SecondList[0].Y;
+                    w++;
+
+                }
+
+                foreach (Rectangle rect in SecondList)
+                {
+
+                    rect.X = FirstList.Last().X;
+                    rect.Y += 45;
+
+
+                }
+
+            };
+
+            if (SelectedShapeOption == "BLC")
+            {
+
+
+                foreach (Rectangle rect in SecondList)
+                {
+
+
+
+                    rect.X += (RectWidth + 5) * w;
+                    rect.Y = SecondList[0].Y;
+                    w++;
+
+                }
+
+                foreach (Rectangle rect in FirstList)
+                {
+
+
+
+                    rect.X = SecondList.First().X;
+
+
+                }
+                w = 1;
+            };
+
+            if (SelectedShapeOption == "BRC")
+            {
+
+
+                foreach (Rectangle rect in SecondList)
+                {
+
+
+
+                    rect.X += (RectWidth + 5) * w;
+                    rect.Y = SecondList[0].Y;
+                    w++;
+
+                }
+
+                foreach (Rectangle rect in FirstList)
+                {
+
+
+
+                    rect.X = SecondList.Last().X;
+
+
+                }
+                w = 1;
+            };
+
+            if (SelectedShapeOption == "H1L")
+            {
+
+                foreach (Rectangle rect in SelectedRectangles)
+                {
+
+                    rect.X += (RectWidth + 5) * w;
+                    rect.Y = SelectedRectangles.First().Y;
+                    w++;
+
+                }
+
+
+                w = 1;
+            };
+
+            if (SelectedShapeOption == "H2L")
+            {
+
+                if (SelectedRectangles.Count % 2 != 0)
+                {
+                    Rectangle popRect = SecondList.First();
+                    FirstList.Add(popRect);
+                    SecondList.Remove(popRect);
+                }
+
+                int l2w = 1;
+                foreach (Rectangle rect in FirstList)
+                {
+
+                    rect.X += (RectWidth + 5) * w;
+                    rect.Y = FirstList.First().Y;
+                    w++;
+
+                }
+
+                foreach (Rectangle rect in SecondList)
+                {
+
+                    rect.X += (RectWidth + 5) * l2w;
+                    rect.Y = FirstList.First().Y + 45;
+                    l2w++;
+
+                }
+
+                w = 1;
+            };
+
+            if (SelectedShapeOption == "V1L")
+            {
+
+                foreach (Rectangle rect in SelectedRectangles)
+                {
+
+                    rect.X = SelectedRectangles.First().X;
+                    if (SelectedRectangles.IndexOf(rect) > 0)
+                    {
+                        rect.Y = SelectedRectangles[SelectedRectangles.IndexOf(rect) - 1].Y + 45;
+
+                    }
+
+
+                }
+
+
+
+            };
+
+            if (SelectedShapeOption == "V2L")
+            {
+
+                if (SelectedRectangles.Count % 2 != 0)
+                {
+                    Rectangle popRect = SecondList.First();
+                    FirstList.Add(popRect);
+                    SecondList.Remove(popRect);
+                }
+
+                foreach (Rectangle rect in FirstList)
+                {
+
+                    rect.X = FirstList.First().X;
+                    if (FirstList.IndexOf(rect) > 0)
+                    {
+                        rect.Y = FirstList[FirstList.IndexOf(rect) - 1].Y + 45;
+
+                    }
+
+
+                }
+
+                float RectY = FirstList.First().Y;
+                foreach (Rectangle rect in SecondList)
+                {
+
+                    rect.X += RectWidth + 5;
+
+                    rect.Y = RectY;
+                    RectY += 45;
+                }
+
+            };
+
+
+            SelectedShapeOption = "";
+        }
+        catch(Exception ex)
+        {
+            
+        }
+       
+
+    }
 }
 

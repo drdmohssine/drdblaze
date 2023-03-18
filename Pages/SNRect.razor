@@ -22,7 +22,7 @@
         <div id="rect-@Rectangle.RectangleID" xmlns="http://www.w3.org/1999/xhtml" class="m-1"
              style="@((Rectangle.Selected) ? "pointer-events: none;font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" :"font-family:Franklin Gothic Medium,Comic Sans MS,Palatino,Georgia;" )">
           
-        <p style="text-align:center;vertical-align:middle;font-size:15px;line-height:15px"> @Rectangle.Text </p>
+        <p style="text-align:center;vertical-align:middle;font-size:15px;line-height:15px;color:@TextColor" > @Rectangle.Text </p>
 
         <Button Color="ButtonColor.Primary" @onclick="(e) => SelectRectangle(e,Rectangle)" Style="position:absolute;top:2px;right:2px;"></Button>
 
@@ -53,6 +53,8 @@
 
     [Parameter]
     public Rectangle Rectangle { get; set; }
+    [Parameter]
+    public string TextColor { get; set; }
     [Parameter]
     public EventCallback OnMouseDown { get; set; }
     [Parameter]
