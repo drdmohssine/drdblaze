@@ -31,8 +31,8 @@ jobs:
       
     # changes the base-tag in index.html from '/' to 'drdblaze' to match GitHub Pages repository subdirectory
     - name: Change base-tag in index.html from / to drdblaze
-      run: sed -i 's/<base href="\/" \/>/<base href="\/drdblaze\/" \/>/g' release/wwwroot/index.html
-     
+      run: sed -i 's/<base href="\/" \/>/<base href="\/drdblaze\/" \/>/g' wwwroot/index.html
+
     # copy index.html to 404.html to serve the same file when a file is not found
     - name: copy index.html to 404.html
       run: cp release/wwwroot/index.html release/wwwroot/404.html
