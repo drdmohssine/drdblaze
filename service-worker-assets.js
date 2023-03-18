@@ -21,7 +21,7 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-2UPB0t8ORHAz8l6iywFhTFtolgXm6VxKaDY5oAAG2kQ=",
+      "hash": "sha256-dJCG01xJvmXoViyZgOKd1F2zZQoy7hhs6vJtr4C\/HJM=",
       "url": "index.html"
     },
     {
@@ -273,5 +273,5 @@
       "url": "_content\/SkiaSharp.Views.Blazor\/SKHtmlCanvas.js"
     }
   ],
-  "version": "kNeEmqFG"
+  "version": "szeCLWzn"
 };
