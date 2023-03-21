@@ -8,10 +8,10 @@
   "resources": {
     "assembly": {
       "BlazorBootstrap.dll": "sha256-P+7O+iqrceXRYX1Du5dXunQ+miTwjNnCfhDzNXYbnxY=",
-      "drdblaze.dll": "sha256-VZj8jX+mPsZ2NqAQIyViU1fBDbwajrgwVxPUrNI354o=",
+      "drdblaze.dll": "sha256-FnvE15SivZT0R74wKIIeY3iUFbVWltXlrHSIEtN2gYE=",
       "Microsoft.AspNetCore.Components.dll": "sha256-HvjzRcD69lS8RevL50bwOJxi2reIpZ4J3krm6xsfJJk=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-8szGqnp6U6\/lV2K0tu+7FCgTbxkYiAMgXHeO9ViLE\/0=",
-      "Microsoft.AspNetCore.Components.Web.dll": "sha256-tCiW2sENOrIBdIM4xk9DQw0vqEv7Lj9B6XvQVEidSyk=",
+      "Microsoft.AspNetCore.Components.Web.dll": "sha256-r3JT6USEs5Y\/d7FhT3+V+vgmWr8VXft6771auo0XlzE=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-2Jg3mQhCSyqkofbgXHMRw0whL7fAl07+VKYd0lApk7I=",
       "Microsoft.Extensions.Configuration.Abstractions.dll": "sha256-X\/f4fDl2cuIRXeWHhK\/f2UqQbFioD+RU4a4CEh0zrrQ=",
       "Microsoft.Extensions.Configuration.dll": "sha256-DBOKSPriP2JDxVbbWrLXyD3K4\/x3RBifNBWk\/q1I39M=",
