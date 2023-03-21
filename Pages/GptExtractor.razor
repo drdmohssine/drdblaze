@@ -35,7 +35,7 @@
 }
 else
 {
-    <div @onclick="() => {IsSelecting = true;}" @ondblclick="() => {IsSelecting = false;}"
+    <div @onpointermove="(e) => {IsSelecting = e.CtrlKey ? true : false; }" @ondblclick="() => {SelectionWidth = 0; SelectionHeight = 0;}"
          style="width:100vw;height:100vh;background-color:@(canvasColor);overflow:auto;">
 
         @if (IsSelecting)
@@ -43,9 +43,7 @@ else
             <svg id="SvgCanvas" style="border: 1px solid black;" x="0" y="0" width="@canvasWidth" height="@canvasHeight"
          @onmousedown="StartSelection" @onmouseup="EndSelection" @onmousemove="UpdateSelection" @onmouseleave="EndSelection">
 
-
-
-                <rect style="position:relative;z-index:1"
+                <rect style="position:relative;z-index:1" 
                       x="@SelectionStartX" y="@SelectionStartY" width="@SelectionWidth" height="@SelectionHeight"
                       rx="10" ry="10" stroke-width="2" stroke="black" fill="transparent">
 
@@ -64,11 +62,7 @@ else
 
                     </SNRect>
 
-
                 }
-
-
-
 
             </svg>
 
@@ -106,9 +100,9 @@ else
                 }
 
 
-                <rect style="position:relative;z-index:5"
+                <rect style="position:relative;z-index:5" 
                 @onmousedown:stopPropagation @onmouseup:stopPropagation @onmousemove:stopPropagation @onmouseleave:stopPropagation
-              @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
+                @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
                       x="@SelectionStartX" y="@SelectionStartY" width="@SelectionWidth" height="@SelectionHeight"
                       rx="10" ry="10" stroke-width="2" stroke="black" fill="transparent">
                 </rect>
@@ -709,7 +703,7 @@ else
     private double startY;
     private async Task MouseDown(MouseEventArgs e)
     {
-
+        
         IsDragging = true;
         startX = e.OffsetX;
         startY = e.OffsetY;
