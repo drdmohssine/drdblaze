@@ -11,6 +11,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JSRuntime
 @inject HttpClient httpClient
+
 @using SkiaSharp.Views.Blazor;
 
 @if (skiaCanvasView)
@@ -35,8 +36,84 @@
 }
 else
 {
-    <div @onpointermove="(e) => {IsSelecting = e.CtrlKey ? true : false; }" @ondblclick="() => {SelectionWidth = 0; SelectionHeight = 0;}"
-         style="width:100vw;height:100vh;background-color:@(canvasColor);overflow:auto;">
+    <div  @onpointermove="(e) => {IsSelecting = e.CtrlKey ? true : false; }" 
+        @ondblclick="() => {SelectionWidth = 0; SelectionHeight = 0;ShowtMenu = false;}"
+       
+        @oncontextmenu = "(e) => ShowContextMenu(e)" @oncontextmenu:preventDefault
+    style="width:100vw;height:100vh;background-color:@(canvasColor);overflow:auto;">
+
+        @if (ShowtMenu)
+        {
+            <ul class="list-group" style="position:absolute;top:@(MenuY)px;left:@(MenuX)px">
+             
+                <button type="button" class="list-group-item list-group-item-action" @onclick="ExtractTitles">Extract Here</button>
+
+                <div type="button" class="dropend">
+                    <button class="list-group-item dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false" @onclick ='()=>{SelectedShapeOption = "";}'>
+                        Shapes
+                    </button>
+                  
+                    <ul class="dropdown-menu form-check">
+                     <div class=" list-group-item list-group-item-action">
+                            <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="TLC" value="TLC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                    <label class="ms-1 form-check-label" for="TLC">
+                       TLC
+                    </label>
+                </div>
+                     <div class="list-group-item list-group-item-action">
+                    <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="TRC" value="TRC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                            <label class="ms-1 form-check-label" for="TRC">
+                        TRC
+                    </label>
+                </div>
+                     <div class="list-group-item list-group-item-action">
+                            <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="BLC" value="BLC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                            <label class="ms-1 form-check-label" for="BLC">
+                                BLC
+                            </label>
+                        </div>
+                     <div class="list-group-item list-group-item-action">
+                            <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="BRC" value="BRC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                            <label class="ms-1 form-check-label" for="BRC">
+                                BRC
+                            </label>
+                        </div>
+                     <div class="list-group-item list-group-item-action">
+                            <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="H1L" value="H1L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                            <label class="ms-1 form-check-label" for="H1L">
+                                H1L
+                            </label>
+                        </div>
+                     <div class="list-group-item list-group-item-action">
+                            <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="H2L" value="H2L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                            <label class="ms-1 form-check-label" for="H2L">
+                                H2L
+                            </label>
+                        </div>
+                     <div class="list-group-item list-group-item-action">
+                            <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="V1L" value="V1L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                            <label class="ms-1 form-check-label" for="V1L">
+                                V1L
+                            </label>
+                        </div>
+                     <div class="list-group-item list-group-item-action">
+                            <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="V2L" value="V2L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                            <label class="ms-1 form-check-label" for="V2L">
+                                V2L
+                            </label>
+                        </div>
+               
+
+                    </ul>
+                </div>
+
+                <li class="list-group-item">A second item</li>
+                <li class="list-group-item">A third item</li>
+                <li class="list-group-item">A fourth item</li>
+                <li class="list-group-item">And a fifth one</li>
+            </ul>
+        }
+
 
         @if (IsSelecting)
         {
@@ -146,7 +223,6 @@ else
     </FooterTemplate>
 </Modal>
 
-
 <Offcanvas @ref="offcanvas" Title="Settings">
     <BodyTemplate>
 
@@ -193,72 +269,6 @@ else
                            aria-label="Canvas Height">
                 </div>
 
-            </div>
-
-           
-           
-        </div>
-
-        <div class="card form-check">
-            <div class="row mx-2">
-                <div class="col-md-6">
-                    <input class="form-check-input" type="radio" name="radioGroup" id="TLC" value="TLC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
-                    <label class="form-check-label" for="TLC">
-                       TLC
-                    </label>
-                </div>
-                <div class="col-md-6">
-                    <input class="form-check-input" type="radio" name="radioGroup" id="TRC" value="TRC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
-                    <label class="form-check-label" for="TRC">
-                        TRC
-                    </label>
-                </div>
-            </div>
-
-            <div class="row mx-2">
-                <div class="col-md-6">
-                    <input class="form-check-input" type="radio" name="radioGroup" id="BLC" value="BLC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
-                    <label class="form-check-label" for="BLC">
-                       BLC
-                    </label>
-                </div>
-                <div class="col-md-6">
-                    <input class="form-check-input" type="radio" name="radioGroup" id="BRC" value="BRC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
-                    <label class="form-check-label" for="BRC">
-                       BRC
-                    </label>
-                </div>
-            </div>
-
-
-           <div class="row mx-2">
-                <div class="col-md-6">
-                    <input class="form-check-input" type="radio" name="radioGroup" id="H1L" value="H1L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
-                    <label class="form-check-label" for="H1L">
-                        H1L
-                    </label>
-                </div>
-                <div class="col-md-6">
-                    <input class="form-check-input" type="radio" name="radioGroup" id="H2L" value="H2L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
-                    <label class="form-check-label" for="H2L">
-                        H2L
-                    </label>
-                </div>
-            </div>
-
-           <div class="row mx-2">
-                <div class="col-md-6">
-                    <input class="form-check-input" type="radio" name="radioGroup" id="V1L" value="V1L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
-                    <label class="form-check-label" for="V1L">
-                        V1L
-                    </label>
-                </div>
-                <div class="col-md-6">
-                    <input class="form-check-input" type="radio" name="radioGroup" id="V2L" value="V2L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
-                    <label class="form-check-label" for="V2L">
-                        V2L
-                    </label>
-                </div>
             </div>
 
         </div>
@@ -345,11 +355,13 @@ else
     </FooterTemplate>
 </Offcanvas>
 
+
 @code {
 
     IJSObjectReference JSmodule;
     private SKCanvasView? skiaView;
     ElementReference SvgCanvas;
+
     private ConfirmDialog? dialog;
     private Offcanvas? offcanvas;
     private bool skiaCanvasView { get; set; } = false;
@@ -572,6 +584,17 @@ else
 
     }
 
+    private bool ShowtMenu { get; set; }
+    private double MenuX { get; set; } = 30;
+    private double MenuY { get; set; } = 30;
+    private void ShowContextMenu(MouseEventArgs e)
+    {
+
+        ShowtMenu = true;
+        MenuX = e.ClientX;
+        MenuY = e.ClientY;
+    }
+
     int pointNumber = 0;
     Point pointN1 = new Point();
     private async Task SelectPoint(Point selectedPoint)
@@ -703,7 +726,7 @@ else
     private double startY;
     private async Task MouseDown(MouseEventArgs e)
     {
-        
+
         IsDragging = true;
         startX = e.OffsetX;
         startY = e.OffsetY;
@@ -735,40 +758,49 @@ else
 
     }
 
-    private void ExtractTitles()
+    private async Task ExtractTitles()
     {
-        string pattern = @"^(.*?):";
-
-
-        string[] paragraphs = GptText.Split(new[] { "\r\n\r\n", "\n\n" }, StringSplitOptions.None);
-        int rectYPos = 30;
-        foreach (string paragraph in paragraphs)
+        @if (String.IsNullOrWhiteSpace(GptText))
         {
-            Match match = Regex.Match(paragraph, pattern);
-            if (match.Success)
-            {
-                string result = match.Groups[1].Value;
-
-                // Handle button click event here
-                Rectangles.Add(
-                   new Rectangle(30, rectYPos, RectWidth, RectHeight)
-                       {
-                           RectangleID = RectId,
-                           Fill = FillColor,
-                           Text = result,
-
-                       }
-                );
-                MainProject.Packets.Add(
-                    new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 }
-                );
-                rectYPos += 45;
-                RectId++;
-                //Console.WriteLine(result);
-            }
+            await offcanvas.ShowAsync();
         }
+        else
+        {
+            string pattern = @"^(.*?):";
 
-        GptText = "";
+            string[] paragraphs = GptText.Split(new[] { "\r\n\r\n", "\n\n" }, StringSplitOptions.None);
+            float rectYPos = (float)MenuY;
+
+            foreach (string paragraph in paragraphs)
+            {
+                Match match = Regex.Match(paragraph, pattern);
+                if (match.Success)
+                {
+                    string result = match.Groups[1].Value;
+
+                    // Handle button click event here
+                    Rectangles.Add(
+                       new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
+                           {
+                               RectangleID = RectId,
+                               Fill = FillColor,
+                               Text = result,
+
+                           }
+                    );
+                    MainProject.Packets.Add(
+                        new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 }
+                    );
+                    rectYPos += 45;
+                    RectId++;
+                    //Console.WriteLine(result);
+                }
+            }
+
+            GptText = "";
+            ShowtMenu = false;
+        }
+    
     }
 
     private string ParentRectText { get; set; }

@@ -179,6 +179,13 @@ window.interop = {
 
 };
 
+export async function GetClipBoardText() {
+    // copy the text from clipboard
+    const copiedText = await navigator.clipboard.readText();
+    console.log(copiedText); // copied text will be shown here.
+    return copiedText;
+}
+
 
 //// Get references to the SVG element and the selection rectangle
 //const svg = document.querySelector('svg');
