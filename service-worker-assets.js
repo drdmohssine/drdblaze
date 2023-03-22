@@ -25,7 +25,7 @@
       "url": "index.html"
     },
     {
-      "hash": "sha256-1+JIQxGUWYOxH9lYp0b4T8QaMDs0QnwjCPL7GMSpTCk=",
+      "hash": "sha256-CxG3ArtL50gDxM8vTmJRSz+bkdUWixdjBWghy\/YJLr0=",
       "url": "JSFiles\/drdblazeJS.js"
     },
     {
@@ -57,7 +57,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-bA5IE9FNJY8tV7ipU1Y7cHx6kIkGxh8cF6NTKMYijUA=",
+      "hash": "sha256-ZD8RNmPnk\/bGiA8tevLLhGyIaTWyv7a27m2hY+1R2Jo=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -65,7 +65,7 @@
       "url": "_framework\/BlazorBootstrap.dll"
     },
     {
-      "hash": "sha256-FnvE15SivZT0R74wKIIeY3iUFbVWltXlrHSIEtN2gYE=",
+      "hash": "sha256-eqOrpu34AgcqY3YOTL\/wKUfJBmXCf3ZmbqfHRICFQ0s=",
       "url": "_framework\/drdblaze.dll"
     },
     {
@@ -273,5 +273,5 @@
       "url": "_content\/SkiaSharp.Views.Blazor\/SKHtmlCanvas.js"
     }
   ],
-  "version": "QWaioHXq"
+  "version": "2S1i4qQX"
 };
