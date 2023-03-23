@@ -19,9 +19,7 @@
 
 
     <div style="width:@(canvasWidth)px;height:@(canvasHeight)px;background-color:@(canvasColor) ;overflow:auto">
-
-
-        <SKCanvasView @ref="skiaView" OnPaintSurface="OnPaintSurface" IgnorePixelScaling="true"
+      <SKCanvasView @ref="skiaView" OnPaintSurface="OnPaintSurface" IgnorePixelScaling="true"
                       style="position: absolute;
                                          top: 0;background-color:transparent;
                                          left: 0; width:inherit;height:inherit;
@@ -41,6 +39,7 @@ else
        
         @oncontextmenu = "(e) => ShowContextMenu(e)" @oncontextmenu:preventDefault
     style="width:100vw;height:100vh;background-color:@(canvasColor);overflow:auto;">
+       
 
         @if (ShowtMenu)
         {
@@ -106,11 +105,10 @@ else
 
                     </ul>
                 </div>
-
+               
                 <li class="list-group-item">A second item</li>
                 <li class="list-group-item">A third item</li>
-                <li class="list-group-item">A fourth item</li>
-                <li class="list-group-item">And a fifth one</li>
+
             </ul>
         }
 
@@ -768,7 +766,7 @@ else
         {
             string pattern = @"^(.*?):";
 
-            string[] paragraphs = GptText.Split(new[] { "\r\n\r\n", "\n\n" }, StringSplitOptions.None);
+            string[] paragraphs = GptText.Split(new[] {  Environment.NewLine }, StringSplitOptions.None);
             float rectYPos = (float)MenuY;
 
             foreach (string paragraph in paragraphs)
@@ -1371,5 +1369,7 @@ else
        
 
     }
+
+  
 }
 
