@@ -34,11 +34,11 @@
 }
 else
 {
-    <div  @onpointermove="(e) => {IsSelecting = e.CtrlKey ? true : false; }" 
-        @ondblclick="() => {SelectionWidth = 0; SelectionHeight = 0;ShowtMenu = false;}"
+    <div  @onpointermove="(e) => {IsSelecting = e.CtrlKey ? true : false; }"
+     @ondblclick="() => {SelectionWidth = 0; SelectionHeight = 0;ShowtMenu = false;Rectangles.Where( s => s.Selected).ToList().ForEach(s => s.Selected = false);}"
        
         @oncontextmenu = "(e) => ShowContextMenu(e)" @oncontextmenu:preventDefault
-    style="width:100vw;height:100vh;background-color:@(canvasColor);overflow:auto;">
+        style="width:100vw;height:100vh;background-color:@(canvasColor);overflow:auto;">
        
 
         @if (ShowtMenu)
