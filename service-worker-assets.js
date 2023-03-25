@@ -57,7 +57,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-3cZMVtpVNIkYWgiC9APmsqntflcYjkDyC2egyWPO74A=",
+      "hash": "sha256-R0iubNqhFakO9gdWebsLmexsQG3qN3VVTXgPp4w9PO8=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -65,7 +65,7 @@
       "url": "_framework\/BlazorBootstrap.dll"
     },
     {
-      "hash": "sha256-zBv1pwS6421i64gJbEQGNiRALdbgJQGytn4zcOr+lvM=",
+      "hash": "sha256-EPkNHIQidyqNa3tJbezBD7URuMR003zwmazHGtVZf7A=",
       "url": "_framework\/drdblaze.dll"
     },
     {
@@ -129,7 +129,7 @@
       "url": "_framework\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-MBQPIrnr10PpqZv0HqdjEqHXEae0D3ChGuW6ob\/tksY=",
+      "hash": "sha256-HqJg0tnR3wh9be\/IwKXarOSszEWT1g0CsfMAMqAfwUc=",
       "url": "_framework\/SkiaSharp.dll"
     },
     {
@@ -241,7 +241,7 @@
       "url": "_framework\/dotnet.7.0.4.rcymnj5ehs.js"
     },
     {
-      "hash": "sha256-EXeiiOBQcO2BoC7LZ52+Pc5hGFxI9GT\/MuMPlPTNkZo=",
+      "hash": "sha256-y0LEUYqI6S+N51U8pmE9h9HGa+eQbSKwL3w7FdypKwc=",
       "url": "_framework\/dotnet.wasm"
     },
     {
@@ -273,5 +273,5 @@
       "url": "_content\/SkiaSharp.Views.Blazor\/SKHtmlCanvas.js"
     }
   ],
-  "version": "bM6uzxwb"
+  "version": "nwzjvz6A"
 };
