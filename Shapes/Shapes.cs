@@ -57,6 +57,7 @@ namespace drdblaze.Shapes
 
         public bool Selected { get; set; }
         public string Fill { get; set; }
+        public string BorderColor { get; set; }
         public string Text { get; set; }
 
         public Point TL { get; } = new Point();

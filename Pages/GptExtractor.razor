@@ -1,5 +1,6 @@
-﻿@page "/gptextractor"
-@page "/drdblaze/gptextractor"
+﻿@page "/drdblaze/gptextractor"
+@page "/gptextractor"
+
 @using System.Text.RegularExpressions;
 @using SkiaSharp;
 @using System.Text.Json;
@@ -34,78 +35,78 @@
 }
 else
 {
-    <div  @onpointermove="(e) => {IsSelecting = e.CtrlKey ? true : false; }"
+    <div class="container-fluid"  @onpointermove="(e) => {IsSelecting = e.CtrlKey ? true : false; }"
      @ondblclick="() => {SelectionWidth = 0; SelectionHeight = 0;ShowtMenu = false;Rectangles.Where( s => s.Selected).ToList().ForEach(s => s.Selected = false);}"
-       
+   
         @oncontextmenu = "(e) => ShowContextMenu(e)" @oncontextmenu:preventDefault
         style="width:100vw;height:100vh;background-color:@(canvasColor);overflow:auto;">
-       
+
 
         @if (ShowtMenu)
-        {
-            <ul class="list-group" style="position:absolute;top:@(MenuY)px;left:@(MenuX)px">
-             
+        {        
+            <ul class="list-group" style="position:relative;top:@(MenuY+200)px;left:@(MenuX)px;width:200px;height:auto">
+
                 <button type="button" class="list-group-item list-group-item-action" @onclick="ExtractTitles">Extract Here</button>
 
                 <div type="button" class="dropend">
-                    <button class="list-group-item dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false" @onclick ='()=>{SelectedShapeOption = "";}'>
+                    <button class="list-group-item dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false" @onclick='()=>{SelectedShapeOption = "";}'>
                         Shapes
                     </button>
-                  
+
                     <ul class="dropdown-menu form-check">
-                     <div class=" list-group-item list-group-item-action">
+                        <div class=" list-group-item list-group-item-action">
                             <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="TLC" value="TLC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
-                    <label class="ms-1 form-check-label" for="TLC">
-                       TLC
-                    </label>
-                </div>
-                     <div class="list-group-item list-group-item-action">
-                    <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="TRC" value="TRC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
+                            <label class="ms-1 form-check-label" for="TLC">
+                                TLC
+                            </label>
+                        </div>
+                        <div class="list-group-item list-group-item-action">
+                            <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="TRC" value="TRC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
                             <label class="ms-1 form-check-label" for="TRC">
-                        TRC
-                    </label>
-                </div>
-                     <div class="list-group-item list-group-item-action">
+                                TRC
+                            </label>
+                        </div>
+                        <div class="list-group-item list-group-item-action">
                             <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="BLC" value="BLC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
                             <label class="ms-1 form-check-label" for="BLC">
                                 BLC
                             </label>
                         </div>
-                     <div class="list-group-item list-group-item-action">
+                        <div class="list-group-item list-group-item-action">
                             <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="BRC" value="BRC" @onchange="@((ChangeEventArgs e) => Set(e) )" />
                             <label class="ms-1 form-check-label" for="BRC">
                                 BRC
                             </label>
                         </div>
-                     <div class="list-group-item list-group-item-action">
+                        <div class="list-group-item list-group-item-action">
                             <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="H1L" value="H1L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
                             <label class="ms-1 form-check-label" for="H1L">
                                 H1L
                             </label>
                         </div>
-                     <div class="list-group-item list-group-item-action">
+                        <div class="list-group-item list-group-item-action">
                             <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="H2L" value="H2L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
                             <label class="ms-1 form-check-label" for="H2L">
                                 H2L
                             </label>
                         </div>
-                     <div class="list-group-item list-group-item-action">
+                        <div class="list-group-item list-group-item-action">
                             <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="V1L" value="V1L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
                             <label class="ms-1 form-check-label" for="V1L">
                                 V1L
                             </label>
                         </div>
-                     <div class="list-group-item list-group-item-action">
+                        <div class="list-group-item list-group-item-action">
                             <input class="mx-0 form-check-input" type="radio" name="radioGroup" id="V2L" value="V2L" @onchange="@((ChangeEventArgs e) => Set(e) )" />
                             <label class="ms-1 form-check-label" for="V2L">
                                 V2L
                             </label>
                         </div>
-               
+
 
                     </ul>
                 </div>
-               
+
                 <li class="list-group-item">A second item</li>
                 <li class="list-group-item">A third item</li>
 
@@ -139,6 +140,7 @@ else
 
                 }
 
+            
             </svg>
 
         }
@@ -155,9 +157,6 @@ else
                 {
                     <line x1="0" y1="@y" x2="@canvasWidth" y2="@y" style="stroke: #999; stroke-width: 1;" />
                 }
-
-
-
 
 
                 @foreach (Line line in Lines)
@@ -183,11 +182,12 @@ else
                 </rect>
 
 
-
             </svg>
 
         }
 
+
+      
     </div>
 
 }
@@ -274,14 +274,30 @@ else
 
         <div class="card">
             <div class="m-2 row">
-                <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Rects Color:</label>
-                <div class="col-8 w-50">
-                    <input id="coloraddon" type="color" class="form-control my-2 p-1 "
-                           @bind-value="@FillColor"
-                           placeholder="Color"
-                           aria-label="Color">
+
+                <div class="col-6">
+                    <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Rects Color:</label>
+                    <div class="col-8 w-50">
+                        <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                               @bind-value="@FillColor"
+                               placeholder="Color"
+                               aria-label="Color">
+                    </div>
+
                 </div>
+
+                <div class="col-6">
+                    <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Rect Border:</label>
+                    <div class="col-8 w-50">
+                        <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                               @bind-value="@rectBorderColor"
+                               placeholder="Color"
+                               aria-label="Color">
+                    </div>
+                </div>
+
             </div>
+
             <div class="m-2 row">
                 <dive class="col-6">
                     <label for="rectwidth" class="form-label">Rect Width</label>
@@ -291,6 +307,7 @@ else
                            placeholder="Rect Width"
                            aria-label="Rect Width">
                 </dive>
+
                 <div class="col-6">
                     <label for="rectheight" class="form-label">Rect Height</label>
 
@@ -391,6 +408,7 @@ else
     private int canvasHeight { get; set; } = 1500;
     public string canvasColor { get; set; } = "#cbbace";
     public string txtColor { get; set; } = "#000000";
+    public string rectBorderColor { get; set; } = "#000000";
 
     public DirectoryInfo ProjectPath { get; set; }
 
@@ -420,13 +438,7 @@ else
         SKSurface surface = args.Surface;
         SKCanvas canvas = args.Surface.Canvas;
 
-
-
         DrawGraph(canvas);
-
-
-
-
 
 
     }
@@ -500,10 +512,7 @@ else
 
             //for load JS File
             JSmodule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./JSFiles/drdblazeJS.js");
-
-
         }
-
 
     }
 
@@ -523,6 +532,8 @@ else
                    RectangleID = RectId,
                    Fill = FillColor,
                    Text = RectText,
+                   BorderColor = rectBorderColor,
+                   
 
                }
         );
@@ -587,10 +598,10 @@ else
     private double MenuY { get; set; } = 30;
     private void ShowContextMenu(MouseEventArgs e)
     {
-
+        Console.WriteLine($"X Position:{e.OffsetX}");
         ShowtMenu = true;
-        MenuX = e.ClientX;
-        MenuY = e.ClientY;
+        MenuX = e.OffsetX;
+        MenuY = e.OffsetY;
     }
 
     int pointNumber = 0;
@@ -783,6 +794,7 @@ else
                                RectangleID = RectId,
                                Fill = FillColor,
                                Text = result,
+                               BorderColor = rectBorderColor
 
                            }
                     );
@@ -798,7 +810,7 @@ else
             GptText = "";
             ShowtMenu = false;
         }
-    
+
     }
 
     private string ParentRectText { get; set; }
@@ -1019,9 +1031,16 @@ else
             float height = rectangle.Height; // Replace with your value from "@Rectangle.Height"
             float rx = 10;
             float ry = 10;
-            SKColor strokeColor = SKColors.Black;
+            SKColor strokeColor = SKColor.Parse(rectangle.BorderColor);
             float strokeWidth = 2;
             SKColor fillColor = SKColor.Parse(rectangle.Fill); // Replace with your value from "@Rectangle.Fill"
+            var RectangleStyleFillShadow = SKImageFilter.CreateDropShadow(
+                0,
+                0,
+                5,
+                5,
+                SKColors.Black.WithAlpha(100)
+               );
 
 
             string text = rectangle.Text; // Replace with your desired text
@@ -1033,14 +1052,17 @@ else
                     Color = strokeColor,
                     StrokeWidth = strokeWidth,
                     IsStroke = true,
-                    IsAntialias = true
+                    IsAntialias = true,
+                  
+
                 };
 
             // Create a new paint object for the fill
             SKPaint fillPaint = new SKPaint
                 {
                     Color = fillColor,
-                    IsAntialias = true
+                    IsAntialias = true,
+                    ImageFilter = RectangleStyleFillShadow
                 };
 
             // Create a new paint object for the text
@@ -1364,12 +1386,12 @@ else
         }
         catch(Exception ex)
         {
-            
+
         }
-       
+
 
     }
 
-  
+    
 }
 

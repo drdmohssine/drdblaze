@@ -2,13 +2,13 @@
 @using drdblaze.Shapes;
 
 
-<rect style="position: relative;z-index:1"
+<rect style="position:relative;z-index:1"
      
               
                 @onmousedown="MouseDown" @onmouseup="MouseUp" @onmousemove="MouseMove" @onmouseleave="MouseUp"
     
               x="@Rectangle.X" y="@Rectangle.Y" width="@Rectangle.Width" height="@Rectangle.Height"
-              rx="10" ry="10" stroke-width="2" stroke="black" fill="@Rectangle.Fill" >
+              rx="10" ry="10" stroke-width="2" stroke="@Rectangle.BorderColor" fill="@Rectangle.Fill" >
         
           
   </rect>
