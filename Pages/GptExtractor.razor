@@ -192,10 +192,10 @@ else
 
 }
 
-<Button style="position:absolute;top:5px;left:600px;width:10px;height:10px" Color="ButtonColor.Primary" @onclick="(async () => { await ShowOffcanvasAsync(); })"></Button>
+<Button style="position:absolute;top:5px;left:600px;width:10px;height:10px" Color="ButtonColor.Danger" @onclick="(async () => { await ShowOffcanvasAsync(); })"></Button>
 
 <div class="form-check form-switch" style="position:absolute;top:1px;left:700px;">
-    <input class="form-check-input" type="checkbox" id="flexSwitchCheck" @bind-value="skiaCanvasView" />
+    <input class="form-check-input bg-danger" type="checkbox" id="flexSwitchCheck" @bind-value="skiaCanvasView" />
     <label class="form-check-label" for="flexSwitchCheck">View</label>
 </div>
 
