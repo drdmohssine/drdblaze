@@ -39,7 +39,7 @@ else
      @ondblclick="() => {SelectionWidth = 0; SelectionHeight = 0;ShowtMenu = false;Rectangles.Where( s => s.Selected).ToList().ForEach(s => s.Selected = false);}"
    
         @oncontextmenu = "(e) => ShowContextMenu(e)" @oncontextmenu:preventDefault
-        style="height:100vh;width:100vw;background-color:@(canvasColor);overflow:auto;">
+         style="height:100vh;width:100vw;background-color:@(canvasColor);overflow:auto">
 
 
         @if (ShowtMenu)

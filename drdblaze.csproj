@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+    <EmccTotalMemory>16777216</EmccTotalMemory>
   </PropertyGroup>
 
   <ItemGroup>
