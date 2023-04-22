@@ -1,0 +1,41 @@
+﻿@page "/drdblaze/openfiles"
+@page "/openfiles"
+@implements IAsyncDisposable
+@inject IJSRuntime JSRuntime
+
+<h3>OpenFiles</h3>
+<p>
+    <Button Color="ButtonColor.Primary" @onclick="OpenZipFile">Open File </Button>
+
+</p>
+
+@code {
+
+    
+    IJSObjectReference JSmodule;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //for load JS File
+            JSmodule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./JSFiles/drdblazeJS.js");
+        }
+
+    }
+
+    private async Task OpenZipFile()
+    {
+        await JSmodule.InvokeVoidAsync("OpenSnotesFile");
+
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+
+        if (JSmodule != null)
+        {
+            await JSmodule.DisposeAsync();
+        }
+    }
+}

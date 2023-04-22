@@ -233,7 +233,7 @@ export async function GetClipBoardText() {
 //        selectionRect.setAttribute('width', currentWidth);
 //        selectionRect.setAttribute('height', currentHeight);
 
-        
+
 
 //    }
 //});
@@ -246,3 +246,30 @@ export async function GetClipBoardText() {
 //    // Set selecting to false
 //    selecting = false;
 //});
+
+
+export async function OpenSnotesFile() {
+    const options = {
+        types: [
+            {
+                description: 'sNotes File',
+                accept: {
+                    'application/snotes': ['.snotes']
+                }
+            },
+        ],
+        excludeAcceptAllOption: true,
+        multiple: false
+    };
+
+
+    try {
+        [fileHandle] = await window.showOpenFilePicker(options);
+  
+
+
+    } catch (e) {
+
+        console.error('File picker was cancelled by the user');
+    }
+}
