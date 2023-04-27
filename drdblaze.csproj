@@ -14,6 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.2" PrivateAssets="all" />
     <PackageReference Include="SkiaSharp" Version="2.88.3" />
     <PackageReference Include="SkiaSharp.Views.Blazor" Version="2.88.3" />
+    <PackageReference Include="Vidazor" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>
