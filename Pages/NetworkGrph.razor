@@ -54,11 +54,11 @@
                     Right = 10,
                     Top = 10
                 },
-
+                
             } );
 
             //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
-            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) {Smooth =  new EdgeSmoothOptions(){ Enabled = false}, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true, ScaleFactor = 1 } } });
+            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth =  new EdgeSmoothOptions(){ Enabled = false}, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true, ScaleFactor = 1 } } });
 
         }
 
@@ -76,18 +76,32 @@
 
     private NetworkOptions EditorConstructionOptions(Network network)
     {
+        
         return new NetworkOptions
             {
+                Layout = new LayoutOptions()
+                {
+                    Hierarchical = new HierarchicalOptions()
+                    {
+                        Direction = "LR",
+                        SortMethod = "directed",
+                        ShakeTowards = "leaves",
+                       
+                        LevelSeparation =300
+                    }
+                },
+
                 Physics = new PhysicsOptions()
                 {
-
+                    //Enabled = false
                     BarnesHut = new BarnesHutOption()
                     {
 
                         AvoidOverlap = 1,
                         Damping = 1, 
-    }
+                    }
                 }
+           
             };
     }
 
@@ -147,6 +161,7 @@
 
                     if(packets.Count > 0)
                     {
+                        /*
                         nodes = new List<Node>();
                         edges = new List<Edge>();
 
@@ -174,12 +189,14 @@
                             edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true } } });
 
                         }
+                       */
+
                         foreach (Packet packet in packets)
                         {
 
 
-                            nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 3, "box"));
-                            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true } } });
+                            nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, packet.Level, "box"));
+                            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) {  Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true } } });
 
 
                         }
