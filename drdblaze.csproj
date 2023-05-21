@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.2" PrivateAssets="all" />
     <PackageReference Include="SkiaSharp" Version="2.88.3" />
     <PackageReference Include="SkiaSharp.Views.Blazor" Version="2.88.3" />
-    <PackageReference Include="Vidazor" Version="1.0.5" />
+    <PackageReference Include="VisNetwork.Blazor" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +30,14 @@
 
   <ItemGroup>
     <None Include="wwwroot\JSFiles\drdblazeJS.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\NetworkGrph.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\NetworkGrph.razor" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace drdblaze.Data
@@ -27,12 +28,28 @@ namespace drdblaze.Data
             // public bool Editable { get; set; }
 
             public int? ParentID { get; set; }
+
+            [ForeignKey("ParentID")]
             [JsonIgnore]
-            public Packet? Parent { get; set; }
+            public virtual Packet? Parent { get; set; }
+
             public int ProjectFK { get; set; }
             public Project Project { get; set; }
             public List<NotePacket> NotePackets { get; set; }
-
+            public int Level
+            {
+                get
+                {
+                    if (ParentID.HasValue)
+                    {
+                        return Parent.Level + 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
 
         }
 
@@ -199,6 +216,7 @@ namespace drdblaze.Data
 
         }
 
+       
 
 
 

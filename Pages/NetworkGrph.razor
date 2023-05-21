@@ -1,0 +1,234 @@
+﻿@page "/drdblaze/networkgrph"
+@page "/networkgrph"
+@using System.Text.Json;
+@using System.Reflection;
+@using VisNetwork.Blazor.Models
+@using static drdblaze.Data.SNData;
+
+<div class="col">
+    <div class="row">
+        <Network @ref="network" Id="my-id" Options="EditorConstructionOptions" Data="@data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container " style="background-color:lightgray;height:100vh;" />
+    </div>
+
+
+</div>
+
+@code {
+    private Network network;
+    private NetworkData data;
+    List<Node> nodes = new List<Node>();
+    List<Edge> edges = new List<Edge>();
+    Project graphproject;
+
+    int CurrentLevel;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        HttpClient httpClient = new HttpClient();
+
+        httpClient.BaseAddress = new Uri("https://raw.githubusercontent.com/");
+
+        graphproject = await httpClient.GetFromJsonAsync<Project>("drdmohssine/StaticsRep/main/JavaScriptFile.json");
+
+        graphproject.Packets = graphproject.Packets.Select(pr => { pr.Parent = graphproject.Packets.Where(pd => pd.PacketID == pr.ParentID).ToList().FirstOrDefault(); return pr; }).ToList();
+
+        nodes.Add(new Node("1", graphproject.Packets.Where(p => p.PacketID == 1).FirstOrDefault().Title, 0, "box"));
+
+
+
+        foreach(Packet packet in graphproject.Packets.Where(p => p.ParentID == 1).ToList())
+        {
+
+
+            nodes.Add(new Node()
+            {
+                Id = packet.PacketID.ToString(),
+                Label = packet.Title,
+                Level = packet.Level,
+                Shape = "box",
+                Margin = new NodeMarginOption()
+                {
+                    Bottom=10,
+                    Left = 10,
+                    Right = 10,
+                    Top = 10
+                },
+
+            } );
+
+            //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
+            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) {Smooth =  new EdgeSmoothOptions(){ Enabled = false}, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true, ScaleFactor = 1 } } });
+
+        }
+
+        CurrentLevel = 2;
+        await Task.Delay(500);
+
+        data = new NetworkData
+            {
+                Edges = edges,
+                Nodes = nodes
+            };
+
+        StateHasChanged();
+    }
+
+    private NetworkOptions EditorConstructionOptions(Network network)
+    {
+        return new NetworkOptions
+            {
+                Physics = new PhysicsOptions()
+                {
+
+                    BarnesHut = new BarnesHutOption()
+                    {
+
+                        AvoidOverlap = 1,
+                        Damping = 1, 
+    }
+                }
+            };
+    }
+
+
+
+    protected override void OnInitialized()
+    {
+        /*
+
+
+        var nodes = new List<Node>();
+        var edges = new List<Edge>();
+
+        nodes.Add(new Node("1", "Function Methods and Properties", 1, "box"));
+        nodes.Add(new Node("2", "Node 2", 2, "ellipse"));
+        edges.Add(new Edge("1", "2"));
+        nodes.Add(new Node("3", "Node 3", 4, "database"));
+        edges.Add(new Edge("2", "3"));
+
+                data = new NetworkData
+                {
+                Edges = edges,
+                Nodes = nodes
+    };
+    */
+    }
+
+
+    private void OnDoubleClickEvent<T>(string name, T eventArg)
+    {
+        try{
+
+
+
+            // Get the type of T
+            Type type = typeof(T);
+
+            // Get the property by name
+            PropertyInfo propertyInfo = type.GetProperty("Nodes");
+
+            if (propertyInfo != null)
+            {
+
+
+                // Get the value of the property from the object
+                object nodesValue = propertyInfo.GetValue(eventArg);
+
+                if (nodesValue is IEnumerable<object> nds && nodes.Any())
+                {
+                    object firstNode = nds.First();
+
+                    int parentid = Convert.ToInt16(firstNode);
+
+                    List<Packet> packets = graphproject.Packets.Where(p => p.ParentID == parentid).ToList();
+
+                    Packet selectedPacket = graphproject.Packets.Where(p => p.PacketID == parentid).FirstOrDefault();
+
+                    if(packets.Count > 0)
+                    {
+                        nodes = new List<Node>();
+                        edges = new List<Edge>();
+
+                        foreach (Packet packet in graphproject.Packets.Where(p => p.Level < CurrentLevel).ToList())
+                        {
+
+
+                            nodes.Add(new Node()
+                                {
+                                    Id = packet.PacketID.ToString(),
+                                    Label = packet.Title,
+                                    Level = packet.Level,
+                                    Shape = "box",
+                                    Margin = new NodeMarginOption()
+                                    {
+                                        Bottom = 10,
+                                        Left = 10,
+                                        Right = 10,
+                                        Top = 10
+                                    },
+
+                                });
+
+                            //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
+                            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true } } });
+
+                        }
+                        foreach (Packet packet in packets)
+                        {
+
+
+                            nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 3, "box"));
+                            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true } } });
+
+
+                        }
+
+
+
+                        data = new NetworkData
+                            {
+                                Edges = edges,
+                                Nodes = nodes
+                            };
+
+                        CurrentLevel = packets[0].Level;
+
+                    }
+
+                
+                    StateHasChanged();
+
+
+                    // Process the first node as needed
+                    Console.WriteLine("First Node: " + firstNode);
+                }
+                else
+                {
+                    Console.WriteLine("No nodes found or property is not an enumerable.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Property not found.");
+            }
+        }catch(Exception ex)
+        {
+            Console.WriteLine("Can't get child node");
+        }
+        
+
+    }
+
+
+
+
+    private void NetworkOnDoubleClick(ClickEvent eventArg) => OnDoubleClickEvent("doubleClick", eventArg);
+
+    //private void NetworkOnClick(ClickEvent eventArg) => AddEvent("click", eventArg);
+
+   
+   
+
+  
+}

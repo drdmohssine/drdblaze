@@ -7,11 +7,14 @@
 @using System.Text.Json.Serialization;
 @using System.IO.Compression;
 @using System.Text;
+@using drdblaze.Data;
 @using drdblaze.Shapes;
 @using static drdblaze.Data.SNData;
 @implements IAsyncDisposable
 @inject IJSRuntime JSRuntime
 @inject HttpClient httpClient
+@inject NavigationManager Navigation
+@inject SharedData sharedData
 
 @using SkiaSharp.Views.Blazor;
 
@@ -412,17 +415,12 @@ else
 
     public DirectoryInfo ProjectPath { get; set; }
 
-    public Project MainProject = new Project()
-        {
 
-            ProjectID = 1,
-            Name = "sNotes Project",
-            Packets = new List<Packet>(),
-            NotesCollection = new List<NotesCollection>(),
-        };
 
     protected override async Task OnInitializedAsync()
     {
+
+        
         // download the font file
         byte[] fontData = await httpClient.GetByteArrayAsync("Fonts/RobotoSlabFont.ttf");
         // create an SKTypeface object from the font data
@@ -537,7 +535,7 @@ else
 
                }
         );
-        MainProject.Packets.Add(
+        sharedData.MainProject.Packets.Add(
                     new Packet { PacketID = RectId, Title = RectText, Selected = true, ProjectFK = 1 }
                 );
 
@@ -588,7 +586,7 @@ else
                 Note = new List<Note>()
             };
 
-        MainProject.NotesCollection.Add(defaultNC);
+        sharedData.MainProject.NotesCollection.Add(defaultNC);
 
 
     }
@@ -662,7 +660,7 @@ else
         if (confirmation)
         {
             // do whatever
-            MainProject.Packets.Remove(MainProject.Packets.Where(r => r.PacketID == rectangle.RectangleID).FirstOrDefault());
+            sharedData.MainProject.Packets.Remove(sharedData.MainProject.Packets.Where(r => r.PacketID == rectangle.RectangleID).FirstOrDefault());
             Rectangles.Remove(rectangle);
             await modal?.HideAsync();
         }
@@ -798,7 +796,7 @@ else
 
                            }
                     );
-                    MainProject.Packets.Add(
+                    sharedData.MainProject.Packets.Add(
                         new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 }
                     );
                     rectYPos += 45;
@@ -821,11 +819,11 @@ else
     private void SelectParent()
     {
         ParentRect = Rectangles.FirstOrDefault(r => r.Text == ParentRectText);
-        ParentPacket = MainProject.Packets.FirstOrDefault(p => p.PacketID == ParentRect.RectangleID);
+        ParentPacket = sharedData.MainProject.Packets.FirstOrDefault(p => p.PacketID == ParentRect.RectangleID);
 
         foreach (Rectangle rect in Rectangles.Where(s => s.Selected == true).ToList())
         {
-            ChildPacket = MainProject.Packets.FirstOrDefault(p => p.PacketID == rect.RectangleID);
+            ChildPacket = sharedData.MainProject.Packets.FirstOrDefault(p => p.PacketID == rect.RectangleID);
             Lines.Add(
                     new Line(ParentRect.MC, rect.MC)
                         {
@@ -836,7 +834,7 @@ else
                 );
 
             ChildPacket.ParentID = ParentPacket.PacketID;
-            ChildPacket.Parent = null;
+            //ChildPacket.Parent = null;
             ChildPacket.Selected = false;
         }
 
@@ -898,7 +896,7 @@ else
 
         // Serialize the full project object to a file
 
-        await SerializeProjectAsync(MainProject);
+        await SerializeProjectAsync(sharedData.MainProject);
 
 
         // Serialize the list of note cards to a file
@@ -931,14 +929,14 @@ else
         {
             if(Rectangles.Count > 0)
             {
-                MainProject.Name = Rectangles[0].Text;
+                sharedData.MainProject.Name = Rectangles[0].Text;
 
             }
 
             byte[] ProjectArray = await BuildProjectPackage();
 
 
-            var fileName = $"{MainProject.Name}.snotes";
+            var fileName = $"{sharedData.MainProject.Name}.snotes";
 
             await JSmodule.InvokeVoidAsync("blazorDownloadFile", fileName, "application/zip", ProjectArray);
 
