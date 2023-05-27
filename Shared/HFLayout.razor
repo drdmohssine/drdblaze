@@ -1,0 +1,236 @@
+﻿@using VisNetwork.Blazor.Models;
+@using drdblaze.Data;
+@inherits LayoutComponentBase
+@inject SharedData sharedData
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blazor WebAssembly Layout</title>
+   
+    <link href="css/app.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="header">
+        <!-- Your header content goes here -->
+        <div class="m-2 row">
+            <div class="col-3">
+                <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Node Color:</label>
+                <div class="col-8 w-50">
+                    <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                   
+                           @bind-value="sharedData.nodeColor"
+                           @bind-value:after = "() => SetNodesColor()"
+                           placeholder="Node Color"
+                           aria-label="Node Color">
+                </div>
+
+
+              
+            
+            </div>
+
+            <div class="col-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked value="LR" @onchange="(ChangeEventArgs e) => SetDirection(e)">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        LR
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="UD" @onchange="(ChangeEventArgs e) => SetDirection(e)">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        UD
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="Cluster" @onchange="(ChangeEventArgs e) => SetLayoutOption(e)">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Cluster
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="col-3">
+                <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Canvas Color:</label>
+                <div class="col-8 w-50">
+                    <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                    @bind-value="@(sharedData.canvasColor)" @bind-value:after="()=>{sharedData.NotifyStateChanged();}"
+                           placeholder="Canvas Color"
+                           aria-label="Canvas Color">
+                </div>
+
+
+
+
+            </div>
+
+            <div class="col-3">
+                <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Font Color:</label>
+                <div class="col-8 w-50">
+                    <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                    @bind-value="sharedData.fontColor"
+                    @bind-value:after="() => SetFontColor()"
+                           placeholder="Font Color"
+                           aria-label="Font Color">
+                </div>
+
+
+
+
+            </div>
+
+
+        </div>
+
+
+       
+    </div>
+
+    <div id="main">
+        <!-- Your main content goes here -->
+        <div class="content">
+            @Body
+        </div>
+    </div>
+
+    <div id="footer">
+        <!-- Your footer content goes here -->
+        <h1>this is footer</h1>
+    </div>
+
+  
+</body>
+</html>
+
+@code{
+
+
+
+
+
+    protected override void OnInitialized()
+    {
+        sharedData.OnChange += StateHasChanged;
+    }
+
+    private void SetNodesColor()
+    {
+
+
+        foreach(var node in sharedData.nodes)
+        {
+            node.Color = new NodeColorType()
+            {
+                 Background = sharedData.nodeColor
+            };
+        }
+
+        sharedData.data = new NetworkData
+            {
+                Edges = sharedData.edges,
+                Nodes = sharedData.nodes
+            };
+
+
+        sharedData.NotifyStateChanged();
+    }
+    private void SetFontColor()
+    {
+
+
+        foreach (var node in sharedData.nodes)
+        {
+            node.Font =  $"14px arial {sharedData.fontColor}";
+
+        }
+
+        sharedData.data = new NetworkData
+            {
+                Edges = sharedData.edges,
+                Nodes = sharedData.nodes
+            };
+
+
+        sharedData.NotifyStateChanged();
+    }
+
+
+
+    private async Task SetCanvasColor(ChangeEventArgs eventArgs)
+    {
+        NetworkOptions netOption = sharedData.EditorConstructionOptions(sharedData.network);
+       
+    }
+
+    private async Task SetDirection(ChangeEventArgs eventArgs)
+    {
+      
+        await  sharedData.network.SetOptions(new NetworkOptions()
+        {
+                Layout = new LayoutOptions()
+                {
+                    Hierarchical = new HierarchicalOptions()
+                    {
+                        Direction = eventArgs.Value.ToString(),
+                        SortMethod = "directed",
+                        ShakeTowards = "leaves",
+
+                        LevelSeparation = 300
+                    }
+                },
+
+                Physics = new PhysicsOptions()
+                {
+                    //Enabled = false
+                    BarnesHut = new BarnesHutOption()
+                    {
+
+                        AvoidOverlap = 1,
+                        Damping = 1,
+                    }
+                }
+        }
+        
+        );
+
+
+        sharedData.NotifyStateChanged();
+    }
+    private async Task SetLayoutOption(ChangeEventArgs eventArgs)
+    {
+        await sharedData.network.SetOptions(new NetworkOptions()
+        {
+               
+             Layout = new LayoutOptions()
+                {
+                    Hierarchical = new HierarchicalOptions()
+                    {
+                        Enabled = false
+                    }
+                },
+                Physics = new PhysicsOptions()
+                {
+                    //Enabled = false
+                    BarnesHut = new BarnesHutOption()
+                    {
+                        SpringLength = 200,
+                        AvoidOverlap = 1,
+                        Damping = 1,
+                    }
+                }
+        }
+        
+        );
+
+       
+    }
+
+    public void Dispose()
+    {
+        sharedData.OnChange -= StateHasChanged;
+
+    }
+}

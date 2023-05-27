@@ -1,23 +1,31 @@
-﻿@page "/drdblaze/networkgrph"
+﻿@layout HFLayout
+
+@page "/drdblaze/networkgrph"
 @page "/networkgrph"
 @using System.Text.Json;
 @using System.Reflection;
 @using VisNetwork.Blazor.Models
+@using drdblaze.Data;
+@using drdblaze.Shared;
 @using static drdblaze.Data.SNData;
 
+@inject SharedData sharedData
+
+
 <div class="col">
-    <div class="row">
-        <Network @ref="network" Id="my-id" Options="EditorConstructionOptions" Data="@data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container " style="background-color:lightgray;height:100vh;" />
+    <div class="row" style="background-color:@(sharedData.canvasColor)">
+        <Network @ref="sharedData.network" Id="my-id" Options="sharedData.EditorConstructionOptions" Data="@sharedData.data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container "style="background-color:inherit;height:100vh;" />
     </div>
 
 
 </div>
 
 @code {
-    private Network network;
-    private NetworkData data;
-    List<Node> nodes = new List<Node>();
-    List<Edge> edges = new List<Edge>();
+
+
+    [CascadingParameter]
+    public Error? Error { get; set; }
+
     Project graphproject;
 
     int CurrentLevel;
@@ -33,7 +41,17 @@
 
         graphproject.Packets = graphproject.Packets.Select(pr => { pr.Parent = graphproject.Packets.Where(pd => pd.PacketID == pr.ParentID).ToList().FirstOrDefault(); return pr; }).ToList();
 
-        nodes.Add(new Node("1", graphproject.Packets.Where(p => p.PacketID == 1).FirstOrDefault().Title, 0, "box"));
+        sharedData.nodes.Add(new Node("1", graphproject.Packets.Where(p => p.PacketID == 1).FirstOrDefault().Title, 0, "box")
+        {
+                Shadow = new NodeShadowOption()
+                {
+                    Enabled = true,
+
+                },
+
+                Font = $"14px arial {sharedData.fontColor}",
+        }
+        );
 
 
 
@@ -41,12 +59,17 @@
         {
 
 
-            nodes.Add(new Node()
+            sharedData.nodes.Add(new Node()
             {
                 Id = packet.PacketID.ToString(),
                 Label = packet.Title,
                 Level = packet.Level,
                 Shape = "box",
+                Shadow = new NodeShadowOption()
+                {
+                    Enabled = true,
+
+                },
                 Margin = new NodeMarginOption()
                 {
                     Bottom=10,
@@ -54,79 +77,33 @@
                     Right = 10,
                     Top = 10
                 },
-                
+                    Font = $"14px arial {sharedData.fontColor}",
             } );
 
             //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
-            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth =  new EdgeSmoothOptions(){ Enabled = false}, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true, ScaleFactor = 1 } } });
+            sharedData.edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true, ScaleFactor = 1 } } });
 
         }
 
         CurrentLevel = 2;
         await Task.Delay(500);
 
-        data = new NetworkData
+        sharedData.data = new NetworkData
             {
-                Edges = edges,
-                Nodes = nodes
+                Edges = sharedData.edges,
+                Nodes = sharedData.nodes
             };
 
         StateHasChanged();
-    }
-
-    private NetworkOptions EditorConstructionOptions(Network network)
-    {
-        
-        return new NetworkOptions
-            {
-                Layout = new LayoutOptions()
-                {
-                    Hierarchical = new HierarchicalOptions()
-                    {
-                        Direction = "LR",
-                        SortMethod = "directed",
-                        ShakeTowards = "leaves",
-                       
-                        LevelSeparation =300
-                    }
-                },
-
-                Physics = new PhysicsOptions()
-                {
-                    //Enabled = false
-                    BarnesHut = new BarnesHutOption()
-                    {
-
-                        AvoidOverlap = 1,
-                        Damping = 1, 
-                    }
-                }
-           
-            };
     }
 
 
 
     protected override void OnInitialized()
     {
-        /*
 
+        sharedData.OnChange += StateHasChanged;
 
-        var nodes = new List<Node>();
-        var edges = new List<Edge>();
-
-        nodes.Add(new Node("1", "Function Methods and Properties", 1, "box"));
-        nodes.Add(new Node("2", "Node 2", 2, "ellipse"));
-        edges.Add(new Edge("1", "2"));
-        nodes.Add(new Node("3", "Node 3", 4, "database"));
-        edges.Add(new Edge("2", "3"));
-
-                data = new NetworkData
-                {
-                Edges = edges,
-                Nodes = nodes
-    };
-    */
     }
 
 
@@ -149,7 +126,7 @@
                 // Get the value of the property from the object
                 object nodesValue = propertyInfo.GetValue(eventArg);
 
-                if (nodesValue is IEnumerable<object> nds && nodes.Any())
+                if (nodesValue is IEnumerable<object> nds && sharedData.nodes.Any())
                 {
                     object firstNode = nds.First();
 
@@ -166,48 +143,74 @@
                         edges = new List<Edge>();
 
                         foreach (Packet packet in graphproject.Packets.Where(p => p.Level < CurrentLevel).ToList())
-                        {
+                                        {
 
 
-                            nodes.Add(new Node()
-                                {
-                                    Id = packet.PacketID.ToString(),
-                                    Label = packet.Title,
+                                        nodes.Add(new Node()
+                                        {
+                                        Id = packet.PacketID.ToString(),
+                                        Label = packet.Title,
                                     Level = packet.Level,
-                                    Shape = "box",
-                                    Margin = new NodeMarginOption()
-                                    {
-                                        Bottom = 10,
-                                        Left = 10,
-                                        Right = 10,
-                                        Top = 10
-                                    },
+                                Shape = "box",
+                            Margin = new NodeMarginOption()
+                            {
+                            Bottom = 10,
+                            Left = 10,
+                            Right = 10,
+                            Top = 10
+                            },
 
-                                });
+                            });
 
                             //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
                             edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true } } });
 
-                        }
+                       }
                        */
 
                         foreach (Packet packet in packets)
                         {
 
+                            if (sharedData.nodes.Count < packet.PacketID)
+                            {
+                                
+                            
+                                sharedData.nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, packet.Level, "box")
+                                {
+                                        Font = $"14px arial {sharedData.fontColor}",
+                                        Shadow = new NodeShadowOption()
+                                        {
+                                            Enabled = true,
 
-                            nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, packet.Level, "box"));
-                            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) {  Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true } } });
+                                        },
+                                });
+                           
+                                sharedData.edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString())
+                                    {
+
+                                        Smooth = new EdgeSmoothOptions() { Enabled = false },
+                                        Arrows = new Arrows
+                                        {
+                                            To = new ArrowsOptions { Enabled = true },
+
+                                        }
+                                    });
+                            }
+
+                            
 
 
                         }
 
 
 
-                        data = new NetworkData
+                        sharedData.data = new NetworkData
                             {
-                                Edges = edges,
-                                Nodes = nodes
+                                Edges = sharedData.edges,
+                                Nodes = sharedData.nodes
                             };
+
+                        
 
                         CurrentLevel = packets[0].Level;
 
@@ -217,8 +220,8 @@
                     StateHasChanged();
 
 
-                    // Process the first node as needed
-                    Console.WriteLine("First Node: " + firstNode);
+                   
+                  
                 }
                 else
                 {
@@ -231,7 +234,7 @@
             }
         }catch(Exception ex)
         {
-            Console.WriteLine("Can't get child node");
+           Error?.ProcessError(ex);
         }
         
 
@@ -246,6 +249,10 @@
 
    
    
+    public void Dispose()
+    {
+        sharedData.OnChange -= StateHasChanged;
 
+    }
   
 }

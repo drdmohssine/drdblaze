@@ -38,6 +38,11 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\NetworkGrph.razor" />
+    <_ContentIncludedByDefault Remove="Shared\Error.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\Error.razor" />
   </ItemGroup>
 
 </Project>

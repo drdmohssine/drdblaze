@@ -588,6 +588,7 @@ else
 
         sharedData.MainProject.NotesCollection.Add(defaultNC);
 
+        sharedData.OnChange += StateHasChanged;
 
     }
 
@@ -1390,6 +1391,10 @@ else
 
     }
 
-    
+    public void Dispose()
+    {
+        sharedData.OnChange -= StateHasChanged;
+
+    }
 }
 
