@@ -14,7 +14,7 @@
 
 <div class="col">
     <div class="row" style="background-color:@(sharedData.canvasColor)">
-        <Network @ref="sharedData.network" Id="my-id" Options="sharedData.EditorConstructionOptions" Data="@sharedData.data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container "style="background-color:inherit;height:100vh;" />
+        <Network @ref="sharedData.network" Id="my-id" Options="sharedData.EditorConstructionOptions" Data="@sharedData.data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container "style="background-color:inherit;height:2000px;width:2000px" />
     </div>
 
 
@@ -171,7 +171,7 @@
                         foreach (Packet packet in packets)
                         {
 
-                            if (sharedData.nodes.Count < packet.PacketID)
+                            if (packet.PacketID > sharedData.nodes.Count )
                             {
                                 
                             

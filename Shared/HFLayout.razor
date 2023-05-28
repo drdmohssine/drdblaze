@@ -3,14 +3,7 @@
 @inherits LayoutComponentBase
 @inject SharedData sharedData
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Blazor WebAssembly Layout</title>
-   
-    <link href="css/app.css" rel="stylesheet" />
-</head>
-<body>
+
     <div id="header">
         <!-- Your header content goes here -->
         <div class="m-2 row">
@@ -47,7 +40,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="Cluster" @onchange="(ChangeEventArgs e) => SetLayoutOption(e)">
                     <label class="form-check-label" for="flexRadioDefault2">
-                        Cluster
+                        Clusters
                     </label>
                 </div>
 
@@ -96,14 +89,9 @@
         </div>
     </div>
 
-    <div id="footer">
-        <!-- Your footer content goes here -->
-        <h1>this is footer</h1>
-    </div>
-
+   
   
-</body>
-</html>
+
 
 @code{
 
