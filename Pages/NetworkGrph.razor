@@ -11,8 +11,20 @@
 
 @inject SharedData sharedData
 
+<div class="input-group">
+    <input type="text" class="form-control"
+    @bind-value="@GraphUrl"
+           placeholder="Graph Url"
+           aria-label="Graph Url"
+           aria-describedby="button-addon2"
+   >
+
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" @onclick="GetGraph">Get Graph</button>
+</div>
 
 <div class="col">
+
+
     <div class="row" style="background-color:@(sharedData.canvasColor)">
         <Network @ref="sharedData.network" Id="my-id" Options="sharedData.EditorConstructionOptions" Data="@sharedData.data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container "style="background-color:inherit;height:2000px;width:2000px" />
     </div>
@@ -29,6 +41,8 @@
     Project graphproject;
 
     int CurrentLevel;
+
+    string GraphUrl = "https://raw.githubusercontent.com/drdmohssine/StaticsRep/main/JavaScriptFile.json";
 
     protected override async Task OnInitializedAsync()
     {
@@ -149,9 +163,9 @@
                                         nodes.Add(new Node()
                                         {
                                         Id = packet.PacketID.ToString(),
-                                        Label = packet.Title,
-                                    Level = packet.Level,
-                                Shape = "box",
+                                    Label = packet.Title,
+                                Level = packet.Level,
+                            Shape = "box",
                             Margin = new NodeMarginOption()
                             {
                             Bottom = 10,
@@ -173,8 +187,8 @@
 
                             if (packet.PacketID > sharedData.nodes.Count )
                             {
-                                
-                            
+
+
                                 sharedData.nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, packet.Level, "box")
                                 {
                                         Font = $"14px arial {sharedData.fontColor}",
@@ -184,7 +198,7 @@
 
                                         },
                                 });
-                           
+
                                 sharedData.edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString())
                                     {
 
@@ -197,7 +211,7 @@
                                     });
                             }
 
-                            
+
 
 
                         }
@@ -210,18 +224,18 @@
                                 Nodes = sharedData.nodes
                             };
 
-                        
+
 
                         CurrentLevel = packets[0].Level;
 
                     }
 
-                
+
                     StateHasChanged();
 
 
-                   
-                  
+
+
                 }
                 else
                 {
@@ -234,9 +248,9 @@
             }
         }catch(Exception ex)
         {
-           Error?.ProcessError(ex);
+            Error?.ProcessError(ex);
         }
-        
+
 
     }
 
@@ -247,7 +261,77 @@
 
     //private void NetworkOnClick(ClickEvent eventArg) => AddEvent("click", eventArg);
 
-   
+
+
+    private async Task GetGraph()
+    {
+        sharedData.data = new NetworkData();
+        sharedData.nodes = new List<Node>();
+        sharedData.edges = new List<Edge>();
+        HttpClient httpClient = new HttpClient();
+
+        httpClient.BaseAddress = new Uri("https://raw.githubusercontent.com/");
+
+        graphproject = await httpClient.GetFromJsonAsync<Project>(GraphUrl.Replace("https://raw.githubusercontent.com/", ""));
+
+        graphproject.Packets = graphproject.Packets.Select(pr => { pr.Parent = graphproject.Packets.Where(pd => pd.PacketID == pr.ParentID).ToList().FirstOrDefault(); return pr; }).ToList();
+
+        sharedData.nodes.Add(new Node("1", graphproject.Packets.Where(p => p.PacketID == 1).FirstOrDefault().Title, 0, "box")
+            {
+                Shadow = new NodeShadowOption()
+                {
+                    Enabled = true,
+
+                },
+
+                Font = $"14px arial {sharedData.fontColor}",
+            }
+        );
+
+
+
+        foreach (Packet packet in graphproject.Packets.Where(p => p.ParentID == 1).ToList())
+        {
+
+
+            sharedData.nodes.Add(new Node()
+                {
+                    Id = packet.PacketID.ToString(),
+                    Label = packet.Title,
+                    Level = packet.Level,
+                    Shape = "box",
+                    Shadow = new NodeShadowOption()
+                    {
+                        Enabled = true,
+
+                    },
+                    Margin = new NodeMarginOption()
+                    {
+                        Bottom = 10,
+                        Left = 10,
+                        Right = 10,
+                        Top = 10
+                    },
+                    Font = $"14px arial {sharedData.fontColor}",
+                });
+
+            //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
+            sharedData.edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true, ScaleFactor = 1 } } });
+
+        }
+
+        CurrentLevel = 2;
+        await Task.Delay(500);
+
+        sharedData.data = new NetworkData
+            {
+                Edges = sharedData.edges,
+                Nodes = sharedData.nodes
+            };
+
+        StateHasChanged();
+    }
+
    
     public void Dispose()
     {
