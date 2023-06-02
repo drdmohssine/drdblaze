@@ -785,40 +785,79 @@ else
         }
         else
         {
-            string pattern = @"^(.*?):";
-
-            string[] paragraphs = GptText.Replace(TextToRemove,"").Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            float rectYPos = (float)MenuY;
-
-            foreach (string paragraph in paragraphs)
+            if (String.IsNullOrWhiteSpace(TextToRemove))
             {
-                Match match = Regex.Match(paragraph, pattern);
-                if (match.Success)
+                string pattern = @"^(.*?):";
+
+                string[] paragraphs = GptText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                float rectYPos = (float)MenuY;
+
+                foreach (string paragraph in paragraphs)
                 {
-                    string result = match.Groups[1].Value;
+                    Match match = Regex.Match(paragraph, pattern);
+                    if (match.Success)
+                    {
+                        string result = match.Groups[1].Value;
 
-                    // Handle button click event here
-                    Rectangles.Add(
-                       new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
-                           {
-                               RectangleID = RectId,
-                               Fill = FillColor,
-                               Text = result,
-                               BorderColor = rectBorderColor
+                        // Handle button click event here
+                        Rectangles.Add(
+                           new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
+                               {
+                                   RectangleID = RectId,
+                                   Fill = FillColor,
+                                   Text = result,
+                                   BorderColor = rectBorderColor
 
-                           }
-                    );
-                    sharedData.MainProject.Packets.Add(
-                        new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 }
-                    );
-                    rectYPos += 45;
-                    RectId++;
-                    //Console.WriteLine(result);
+                               }
+                        );
+                        sharedData.MainProject.Packets.Add(
+                            new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 }
+                        );
+                        rectYPos += 45;
+                        RectId++;
+                        //Console.WriteLine(result);
+                    }
                 }
-            }
 
-            GptText = "";
-            ShowtMenu = false;
+                GptText = "";
+                ShowtMenu = false;
+            }else{
+                string pattern = @"^(.*?):";
+
+                string[] paragraphs = GptText.Replace(TextToRemove, "").Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                float rectYPos = (float)MenuY;
+
+                foreach (string paragraph in paragraphs)
+                {
+                    Match match = Regex.Match(paragraph, pattern);
+                    if (match.Success)
+                    {
+                        string result = match.Groups[1].Value;
+
+                        // Handle button click event here
+                        Rectangles.Add(
+                           new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
+                               {
+                                   RectangleID = RectId,
+                                   Fill = FillColor,
+                                   Text = result,
+                                   BorderColor = rectBorderColor
+
+                               }
+                        );
+                        sharedData.MainProject.Packets.Add(
+                            new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 }
+                        );
+                        rectYPos += 45;
+                        RectId++;
+                        //Console.WriteLine(result);
+                    }
+                }
+
+                GptText = "";
+                ShowtMenu = false;
+            }
+           
         }
 
     }
