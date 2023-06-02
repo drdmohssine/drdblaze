@@ -339,8 +339,8 @@ else
                <div class="m-2 row">
                 <input type="text" class="form-control"
                 @bind-value="@TextToRemove"
-                       placeholder="Remove"
-                       aria-label="Remove"
+                       placeholder="Pattern"
+                       aria-label="Pattern"
                        aria-describedby="button-addon2"
                        >
 
@@ -403,7 +403,7 @@ else
     private int RectId { get; set; } = 1;
 
     private string RectText { get; set; }
-    private string TextToRemove { get; set; }
+    private string TextToRemove { get; set; } = "^([a-z])\\.\\s";
     private string GptText { get; set; }
     private string NewText { get; set; } = "";
     private string parent { get; set; }
@@ -823,8 +823,10 @@ else
                 ShowtMenu = false;
             }else{
                 string pattern = @"^(.*?):";
-
+               
                 string[] paragraphs = GptText.Replace(TextToRemove, "").Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+               
+
                 float rectYPos = (float)MenuY;
 
                 foreach (string paragraph in paragraphs)
@@ -832,7 +834,7 @@ else
                     Match match = Regex.Match(paragraph, pattern);
                     if (match.Success)
                     {
-                        string result = match.Groups[1].Value;
+                        string result = Regex.Replace(match.Groups[1].Value, TextToRemove, "");
 
                         // Handle button click event here
                         Rectangles.Add(
