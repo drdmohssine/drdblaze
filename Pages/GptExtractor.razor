@@ -834,19 +834,36 @@ else
                     Match match = Regex.Match(paragraph, pattern);
                     if (match.Success)
                     {
-                        string result = Regex.Replace(match.Groups[1].Value, TextToRemove, "");
+                        string result = Regex.Replace(match.Groups[1].Value, TextToRemove, "") ;
 
                         // Handle button click event here
-                        Rectangles.Add(
-                           new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
-                               {
-                                   RectangleID = RectId,
-                                   Fill = FillColor,
-                                   Text = result,
-                                   BorderColor = rectBorderColor
+                        if(result == match.Groups[1].Value)
+                        {
+                            Rectangles.Add(
+                          new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
+                              {
+                                  RectangleID = RectId,
+                                  Fill = FillColor,
+                                  Text = result,
+                                  BorderColor = rectBorderColor
 
-                               }
-                        );
+                              }
+                       );
+                        }
+                        else
+                        {
+                            Rectangles.Add(
+                          new Rectangle((float)MenuX+100, rectYPos, RectWidth, RectHeight)
+                              {
+                                  RectangleID = RectId,
+                                  Fill = FillColor,
+                                  Text = result,
+                                  BorderColor = rectBorderColor
+
+                              }
+                       );
+                        }
+
                         sharedData.MainProject.Packets.Add(
                             new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 }
                         );
