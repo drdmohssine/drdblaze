@@ -821,11 +821,15 @@ else
 
                 GptText = "";
                 ShowtMenu = false;
-            }else{
+            }
+            else
+            {
+                
+
                 string pattern = @"^(.*?):";
-               
+
                 string[] paragraphs = GptText.Replace(TextToRemove, "").Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-               
+
 
                 float rectYPos = (float)MenuY;
 
@@ -834,39 +838,66 @@ else
                     Match match = Regex.Match(paragraph, pattern);
                     if (match.Success)
                     {
-                        string result = Regex.Replace(match.Groups[1].Value, TextToRemove, "") ;
+                        string result = Regex.Replace(match.Groups[1].Value, TextToRemove, "");
 
                         // Handle button click event here
-                        if(result == match.Groups[1].Value)
+                        if (result == match.Groups[1].Value)
                         {
-                            Rectangles.Add(
-                          new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
-                              {
-                                  RectangleID = RectId,
-                                  Fill = FillColor,
-                                  Text = result,
-                                  BorderColor = rectBorderColor
+                            ParentRect = new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
+                                {
+                                    RectangleID = RectId,
+                                    Fill = FillColor,
+                                    Text = result,
+                                    BorderColor = rectBorderColor
 
-                              }
-                       );
+                                };
+
+                            Rectangles.Add(ParentRect);
+
+                            ParentPacket = new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 };
+
+                            sharedData.MainProject.Packets.Add(ParentPacket);
+                           
                         }
                         else
                         {
-                            Rectangles.Add(
-                          new Rectangle((float)MenuX+100, rectYPos, RectWidth, RectHeight)
-                              {
-                                  RectangleID = RectId,
-                                  Fill = FillColor,
-                                  Text = result,
-                                  BorderColor = rectBorderColor
+                            
 
-                              }
-                       );
-                        }
+                            Rectangle childRect = new Rectangle((float)MenuX + 100, rectYPos, RectWidth, RectHeight)
+                                {
+                                    RectangleID = RectId,
+                                    Fill = FillColor,
+                                    Text = result,
+                                    BorderColor = rectBorderColor
 
-                        sharedData.MainProject.Packets.Add(
-                            new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 }
-                        );
+                                };
+                            Rectangles.Add(childRect);
+
+                            Packet chPacket = new Packet { PacketID = RectId, Title = result, Selected = true, ProjectFK = 1 };
+                            sharedData.MainProject.Packets.Add(chPacket);
+
+                            try{
+                                Lines.Add(
+                               new Line(ParentRect.MC, childRect.MC)
+                                   {
+                                       Stroke = "#000000",
+                                       StrokeWidth = 2,
+                                       Selected = false
+                                   }
+                                   );
+
+                                chPacket.ParentID = ParentPacket.PacketID;
+
+                                chPacket.Selected = false;
+                            }catch(Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+
+                        
+                       }
+
+                       
                         rectYPos += 45;
                         RectId++;
                         //Console.WriteLine(result);
@@ -876,7 +907,7 @@ else
                 GptText = "";
                 ShowtMenu = false;
             }
-           
+
         }
 
     }
