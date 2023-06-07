@@ -21,11 +21,11 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-dJCG01xJvmXoViyZgOKd1F2zZQoy7hhs6vJtr4C\/HJM=",
+      "hash": "sha256-U+cdWow8Q+X33Lp0xat3g4S+FqGGnCncddFAR0jC2Es=",
       "url": "index.html"
     },
     {
-      "hash": "sha256-dEobGEubqA8gZ8cDWy\/bkmqIr3HC3J14dI5+LuBZXLY=",
+      "hash": "sha256-TWmJqS\/Ofcmm7rhf\/i2QVgMvhiyd\/4MYMiXn820Lq5k=",
       "url": "JSFiles\/drdblazeJS.js"
     },
     {
@@ -57,7 +57,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-dqtmfU2WJcOdvVifTQRuxXe1GR0xn49W4dkMxVzTdZk=",
+      "hash": "sha256-G5X5ZCLHbllIwOYJD\/Zt7yFrrCRT\/7a6UwT7XKfcndY=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -65,7 +65,7 @@
       "url": "_framework\/BlazorBootstrap.dll"
     },
     {
-      "hash": "sha256-8XJ86IYHQQ1MZ+g\/B6bURjzZohKOVA2ZFN2FeE5Fm6A=",
+      "hash": "sha256-lZXc4ACL5OJEl5mtO+QC\/GSvH13GLSmf2GqZ\/2oQIow=",
       "url": "_framework\/drdblaze.dll"
     },
     {
@@ -293,5 +293,5 @@
       "url": "_content\/VisNetwork.Blazor\/BlazorVisNetwork.js.map"
     }
   ],
-  "version": "AqDw7P1J"
+  "version": "iCGF0n94"
 };
