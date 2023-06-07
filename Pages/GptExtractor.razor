@@ -431,7 +431,7 @@ else
     protected override async Task OnInitializedAsync()
     {
 
-        
+
         // download the font file
         byte[] fontData = await httpClient.GetByteArrayAsync("Fonts/RobotoSlabFont.ttf");
         // create an SKTypeface object from the font data
@@ -542,7 +542,7 @@ else
                    Fill = FillColor,
                    Text = RectText,
                    BorderColor = rectBorderColor,
-                   
+
 
                }
         );
@@ -672,7 +672,10 @@ else
         if (confirmation)
         {
             // do whatever
+           
+            Lines = Lines.Except(rectangle.MC.Lines).ToList();
             sharedData.MainProject.Packets.Remove(sharedData.MainProject.Packets.Where(r => r.PacketID == rectangle.RectangleID).FirstOrDefault());
+            
             Rectangles.Remove(rectangle);
             await modal?.HideAsync();
         }
@@ -877,15 +880,16 @@ else
                             sharedData.MainProject.Packets.Add(chPacket);
 
                             try{
-                                Lines.Add(
-                               new Line(ParentRect.MC, childRect.MC)
-                                   {
-                                       Stroke = "#000000",
-                                       StrokeWidth = 2,
-                                       Selected = false
-                                   }
-                                   );
+                                Line pchLine = new Line(ParentRect.MC, childRect.MC)
+                                    {
+                                        Stroke = "#000000",
+                                        StrokeWidth = 2,
+                                        Selected = false,
 
+
+                                    };
+                                Lines.Add(pchLine);
+                                childRect.MC.Lines.Add(pchLine);
                                 chPacket.ParentID = ParentPacket.PacketID;
 
                                 chPacket.Selected = false;
@@ -925,14 +929,15 @@ else
         foreach (Rectangle rect in Rectangles.Where(s => s.Selected == true).ToList())
         {
             ChildPacket = sharedData.MainProject.Packets.FirstOrDefault(p => p.PacketID == rect.RectangleID);
-            Lines.Add(
-                    new Line(ParentRect.MC, rect.MC)
-                        {
-                            Stroke = "#000000",
-                            StrokeWidth = 2,
-                            Selected = false
-                        }
-                );
+
+            Line parentchildLine = new Line(ParentRect.MC, rect.MC)
+                {
+                    Stroke = "#000000",
+                    StrokeWidth = 2,
+                    Selected = false
+                };
+            Lines.Add(parentchildLine);
+            rect.MC.Lines.Add(parentchildLine);
 
             ChildPacket.ParentID = ParentPacket.PacketID;
             //ChildPacket.Parent = null;
