@@ -11,6 +11,8 @@
 
 @inject SharedData sharedData
 
+
+
 <div class="input-group">
     <input type="text" class="form-control"
     @bind-value="@GraphUrl"
@@ -26,7 +28,7 @@
 
 
     <div class="row" style="background-color:@(sharedData.canvasColor)">
-        <Network @ref="sharedData.network" Id="my-id" Options="sharedData.EditorConstructionOptions" Data="@sharedData.data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container "style="background-color:inherit;height:2000px;width:2000px" />
+        <Network @ref="sharedData.network" Id="visnet-id" Options="sharedData.EditorConstructionOptions" Data="@sharedData.data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container "style="background-color:inherit;height:2000px;width:2000px" />
     </div>
 
 
@@ -51,11 +53,11 @@
 
         httpClient.BaseAddress = new Uri("https://raw.githubusercontent.com/");
 
-        graphproject = await httpClient.GetFromJsonAsync<Project>("drdmohssine/StaticsRep/main/JavaScriptFile.json");
+        graphproject = await httpClient.GetFromJsonAsync<Project>("snotesapp/LMStatics/main/HTML-jsFile.json");
 
         graphproject.Packets = graphproject.Packets.Select(pr => { pr.Parent = graphproject.Packets.Where(pd => pd.PacketID == pr.ParentID).ToList().FirstOrDefault(); return pr; }).ToList();
 
-        sharedData.nodes.Add(new Node("1", graphproject.Packets.Where(p => p.PacketID == 1).FirstOrDefault().Title, 0, "box")
+        sharedData.nodes.Add(new Node("1", sharedData.SplitTextToFitWidth(graphproject.Packets.Where(p => p.PacketID == 1).FirstOrDefault().Title, 30), 0, "box")
         {
                 Shadow = new NodeShadowOption()
                 {
@@ -76,7 +78,7 @@
             sharedData.nodes.Add(new Node()
             {
                 Id = packet.PacketID.ToString(),
-                Label = packet.Title,
+                Label = sharedData.SplitTextToFitWidth(packet.Title, 30),
                 Level = packet.Level,
                 Shape = "box",
                 Shadow = new NodeShadowOption()
@@ -95,7 +97,21 @@
             } );
 
             //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
-            sharedData.edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true, ScaleFactor = 1 } } });
+            sharedData.edges.Add(
+                new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) 
+                { Smooth = new EdgeSmoothOptions() { 
+                    Enabled = false },
+                    Color = new ColorType()
+                    {
+                       Color = sharedData.edgeColor,
+                    },
+                    Arrows = new Arrows { 
+                    To = new ArrowsOptions { 
+                        Enabled = true, 
+                        ScaleFactor = 1 }
+                } 
+                }
+            );
 
         }
 
@@ -116,12 +132,12 @@
     protected override void OnInitialized()
     {
 
-          
-
         sharedData.OnChange += StateHasChanged;
 
     }
 
+
+    
 
     private void OnDoubleClickEvent<T>(string name, T eventArg)
     {
@@ -154,35 +170,7 @@
 
                     if(packets.Count > 0)
                     {
-                        /*
-                        nodes = new List<Node>();
-                        edges = new List<Edge>();
-
-                        foreach (Packet packet in graphproject.Packets.Where(p => p.Level < CurrentLevel).ToList())
-                                        {
-
-
-                                        nodes.Add(new Node()
-                                        {
-                                        Id = packet.PacketID.ToString(),
-                                    Label = packet.Title,
-                                Level = packet.Level,
-                            Shape = "box",
-                            Margin = new NodeMarginOption()
-                            {
-                            Bottom = 10,
-                            Left = 10,
-                            Right = 10,
-                            Top = 10
-                            },
-
-                            });
-
-                            //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
-                            edges.Add(new Edge(packet.ParentID.ToString(), packet.PacketID.ToString()) { Smooth = new EdgeSmoothOptions() { Enabled = false }, Arrows = new Arrows { To = new ArrowsOptions { Enabled = true } } });
-
-                       }
-                       */
+                    
 
                         foreach (Packet packet in packets)
                         {
@@ -191,7 +179,7 @@
                             {
 
 
-                                sharedData.nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, packet.Level, "box")
+                                sharedData.nodes.Add(new Node(packet.PacketID.ToString(), sharedData.SplitTextToFitWidth(packet.Title, 30), packet.Level, "box")
                                 {
                                         Font = $"14px arial {sharedData.fontColor}",
                                         Shadow = new NodeShadowOption()

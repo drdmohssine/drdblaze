@@ -7,9 +7,9 @@
     <div id="header">
         <!-- Your header content goes here -->
         <div class="m-2 row">
-            <div class="col-3">
+            <div class="col-2">
                 <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Node Color:</label>
-                <div class="col-8 w-50">
+                <div class="col-4 w-50">
                     <input id="coloraddon" type="color" class="form-control my-2 p-1 "
                    
                            @bind-value="sharedData.nodeColor"
@@ -18,12 +18,26 @@
                            aria-label="Node Color">
                 </div>
 
-
-              
+           
             
             </div>
+        <div class="col-2">
+            <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Edge Color:</label>
+            <div class="col-4 w-50">
+                <input id="coloraddon" type="color" class="form-control my-2 p-1 "
+                @bind-value="sharedData.edgeColor"
+                @bind-value:after="() => SetEdgesColor()"
+                       placeholder="Edge Color"
+                       aria-label="Edge Color">
+            </div>
 
-            <div class="col-3">
+
+
+
+        </div>
+
+       
+        <div class="col-2">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked value="LR" @onchange="(ChangeEventArgs e) => SetDirection(e)">
                     <label class="form-check-label" for="flexRadioDefault1">
@@ -46,7 +60,7 @@
 
             </div>
 
-            <div class="col-3">
+            <div class="col-2">
                 <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Canvas Color:</label>
                 <div class="col-8 w-50">
                     <input id="coloraddon" type="color" class="form-control my-2 p-1 "
@@ -60,7 +74,7 @@
 
             </div>
 
-            <div class="col-3">
+            <div class="col-2">
                 <label for="coloraddon" class="col-4 col-form-label" style="width:120px">Font Color:</label>
                 <div class="col-8 w-50">
                     <input id="coloraddon" type="color" class="form-control my-2 p-1 "
@@ -125,6 +139,28 @@
 
         sharedData.NotifyStateChanged();
     }
+    private void SetEdgesColor()
+    {
+
+
+        foreach (var edge in sharedData.edges)
+        {
+            edge.Color = new ColorType()
+                {
+                    Color = sharedData.edgeColor,
+                };
+        }
+
+        sharedData.data = new NetworkData
+            {
+                Edges = sharedData.edges,
+                Nodes = sharedData.nodes
+            };
+
+
+        sharedData.NotifyStateChanged();
+    }
+
     private void SetFontColor()
     {
 
@@ -152,44 +188,97 @@
 
     private async Task SetDirection(ChangeEventArgs eventArgs)
     {
-      
-        await  sharedData.network.SetOptions(new NetworkOptions()
+        if (eventArgs.Value.ToString() == "UD")
         {
-                Layout = new LayoutOptions()
+            await sharedData.network.SetOptions(new NetworkOptions()
                 {
-                    Hierarchical = new HierarchicalOptions()
+                    Layout = new LayoutOptions()
                     {
-                        Direction = eventArgs.Value.ToString(),
-                        SortMethod = "directed",
-                        ShakeTowards = "leaves",
+                        Hierarchical = new HierarchicalOptions()
+                        {
+                            Direction = eventArgs.Value.ToString(),
+                            SortMethod = "directed",
+                            ShakeTowards = "leaves",
+                            ParentCentralization = true,
+                            LevelSeparation = 300
+                        }
 
-                        LevelSeparation = 300
-                    }
-                },
+                    },
 
-                Physics = new PhysicsOptions()
-                {
-                    //Enabled = false
-                    BarnesHut = new BarnesHutOption()
+                    Physics = new PhysicsOptions()
                     {
+                        //Enabled = false
+                        BarnesHut = new BarnesHutOption()
+                        {
 
-                        AvoidOverlap = 1,
-                        Damping = 1,
+                            AvoidOverlap = 1,
+                            Damping = 1,
+                        },
+
+                        HierarchicalRepulsion = new HierarchicalRepulsionOption()
+                        {
+                            AvoidOverlap = 1,
+                            Damping = 1,
+                            NodeDistance = 120
+                        }
                     }
+
                 }
+
+                );
+
         }
-        
-        );
+        else
+        {
+            await sharedData.network.SetOptions(new NetworkOptions()
+                {
+                    Layout = new LayoutOptions()
+                    {
+                        Hierarchical = new HierarchicalOptions()
+                        {
+                            Direction = eventArgs.Value.ToString(),
+                            SortMethod = "directed",
+                            ShakeTowards = "leaves",
+                            ParentCentralization = true,
+                            LevelSeparation = 300
+                        }
+
+                    },
+
+                    Physics = new PhysicsOptions()
+                    {
+                        //Enabled = false
+                        BarnesHut = new BarnesHutOption()
+                        {
+
+                            AvoidOverlap = 1,
+                            Damping = 1,
+                        },
+
+                        HierarchicalRepulsion = new HierarchicalRepulsionOption()
+                        {
+                            AvoidOverlap = 1,
+                            Damping = 1,
+                            NodeDistance = 60
+                        }
+                    }
+
+                }
+
+       );
+
+        }
 
 
         sharedData.NotifyStateChanged();
     }
+
     private async Task SetLayoutOption(ChangeEventArgs eventArgs)
     {
         await sharedData.network.SetOptions(new NetworkOptions()
-        {
-               
-             Layout = new LayoutOptions()
+            {
+
+                Layout = new LayoutOptions()
                 {
                     Hierarchical = new HierarchicalOptions()
                     {
@@ -206,12 +295,14 @@
                         Damping = 1,
                     }
                 }
-        }
-        
+            }
+
         );
 
-       
+
     }
+       
+    
 
     public void Dispose()
     {
