@@ -354,7 +354,7 @@ else
                           aria-label="Gpt Text"
                           aria-describedby="button-addon2"
                           @onkeyup="@(e => { if (e.Key == "Enter") { ExtractTitles(); } })">
-</textarea>
+                </textarea>
 
             </div>
             <div class="input-group m-1" style="width:350px">
@@ -371,6 +371,20 @@ else
                 <button class="btn btn-outline-secondary" type="button" id="button-addon2" @onclick="SelectParent">Link</button>
             </div>
 
+            <ul class="list-group m-1" style="max-height:200px;overflow:auto">
+
+                @if(duplicatedItems is not null)
+                {
+                    @foreach (var item in duplicatedItems)
+                    {
+                        <li class="list-group-item"> @item.Key </li>
+                    }
+                }
+                
+
+            
+             
+            </ul>
         </div>
 
 
@@ -947,9 +961,15 @@ else
         ParentRectText = "";
     }
 
-
+    IEnumerable<IGrouping<string,Packet>>? duplicatedItems;
     private async Task ShowOffcanvasAsync()
     {
+       
+        duplicatedItems = sharedData.MainProject.Packets
+                                        .GroupBy(t => t.Title).Where(g => g.Count() > 1);
+
+
+
         await offcanvas?.ShowAsync();
     }
     private async Task HideOffcanvasAsync()
