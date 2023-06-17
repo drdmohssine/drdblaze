@@ -942,6 +942,7 @@ else
 
             float rectYPos = (float)MenuY;
 
+
             foreach(LMComponent lMComponent in lMComponents)
             {
                 ParentRect = new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
@@ -958,6 +959,38 @@ else
                 ParentPacket = new Packet { PacketID = RectId, Title = lMComponent.Component, Selected = true, ProjectFK = 1 };
 
                 sharedData.MainProject.Packets.Add(ParentPacket);
+
+                //Connect to a selected Rectangle
+                if(Rectangles.Where(s => s.Selected == true).Count() == 1)
+                {
+                    Rectangle RTRectangle = Rectangles.Where(s => s.Selected == true).FirstOrDefault();
+                    Packet RTPacket = sharedData.MainProject.Packets.Where(p => p.PacketID == RTRectangle.RectangleID).FirstOrDefault();
+
+                    try
+                    {
+                        Line pchLine = new Line(RTRectangle.MC, ParentRect.MC)
+                            {
+                                Stroke = "#000000",
+                                StrokeWidth = 2,
+                                Selected = false,
+
+
+                            };
+                        Lines.Add(pchLine);
+                        ParentRect.MC.Lines.Add(pchLine);
+                        ParentPacket.ParentID = RTPacket.PacketID;
+
+                        ParentPacket.Selected = false;
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                }
+             
 
                 rectYPos += 45;
                 RectId++;
