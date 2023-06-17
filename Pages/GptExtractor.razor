@@ -1036,50 +1036,56 @@ else
                     
                      rectYPos += 45;
                      RectId++;
+                     
+                     if(lMSubComponent.Points is not null && lMSubComponent.Points.Count >0){
+                    
+                         foreach(LMPoint lMPoint in lMSubComponent.Points)
+                         {
 
-                    foreach(LMPoint lMPoint in lMSubComponent.Points)
-                    {
-                        Rectangle pchildRect = new Rectangle((float)MenuX + 200, rectYPos, RectWidth, RectHeight)
-                            {
-                                RectangleID = RectId,
-                                Fill = FillColor,
-                                Text = lMPoint.Point,
-                                BorderColor = rectBorderColor
 
-                            };
-                        Rectangles.Add(pchildRect);
-
-                        Packet pchPacket = new Packet { PacketID = RectId, Title = lMPoint.Point , Selected = true, ProjectFK = 1 };
-                        sharedData.MainProject.Packets.Add(pchPacket);
-
-                        try
-                        {
-                            Line pchLine = new Line(childRect.MC, pchildRect.MC)
+                            Rectangle pchildRect = new Rectangle((float)MenuX + 200, rectYPos, RectWidth, RectHeight)
                                 {
-                                    Stroke = "#000000",
-                                    StrokeWidth = 2,
-                                    Selected = false,
-
+                                    RectangleID = RectId,
+                                    Fill = FillColor,
+                                    Text = lMPoint.Point,
+                                    BorderColor = rectBorderColor
 
                                 };
-                            Lines.Add(pchLine);
-                            pchildRect.MC.Lines.Add(pchLine);
-                            pchPacket.ParentID = chPacket.PacketID;
+                            Rectangles.Add(pchildRect);
 
-                            pchPacket.Selected = false;
+                            Packet pchPacket = new Packet { PacketID = RectId, Title = lMPoint.Point , Selected = true, ProjectFK = 1 };
+                            sharedData.MainProject.Packets.Add(pchPacket);
+
+                            try
+                            {
+                                Line pchLine = new Line(childRect.MC, pchildRect.MC)
+                                    {
+                                        Stroke = "#000000",
+                                        StrokeWidth = 2,
+                                        Selected = false,
 
 
+                                    };
+                                Lines.Add(pchLine);
+                                pchildRect.MC.Lines.Add(pchLine);
+                                pchPacket.ParentID = chPacket.PacketID;
+
+                                pchPacket.Selected = false;
+
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+
+                            rectYPos += 45;
+                            RectId++;
                         }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-
-                        rectYPos += 45;
-                        RectId++;
-                    }
 
                 
+                     }
+                    
                 }
 
 
