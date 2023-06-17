@@ -49,6 +49,8 @@ else
         {        
             <ul class="list-group" style="position:relative;top:@(MenuY+200)px;left:@(MenuX)px;width:200px;height:auto">
 
+                <button type="button" class="list-group-item list-group-item-action" @onclick="ExtractTitlesJson">Extract Json</button>
+
                 <button type="button" class="list-group-item list-group-item-action" @onclick="ExtractTitles">Extract Here</button>
 
                 <div type="button" class="dropend">
@@ -757,7 +759,7 @@ else
 
     private double startX;
     private double startY;
-    private async Task MouseDown(MouseEventArgs e)
+    private void MouseDown(MouseEventArgs e)
     {
 
         IsDragging = true;
@@ -766,12 +768,12 @@ else
 
     }
 
-    private async Task MouseUp(MouseEventArgs e)
+    private void MouseUp(MouseEventArgs e)
     {
         IsDragging = false;
 
     }
-    private async Task MouseMove(MouseEventArgs e)
+    private void MouseMove(MouseEventArgs e)
     {
         if (IsDragging)
         {
@@ -925,6 +927,137 @@ else
 
         }
 
+    }
+
+    private async Task ExtractTitlesJson()
+    {
+        @if (String.IsNullOrWhiteSpace(GptText))
+        {
+            await offcanvas.ShowAsync();
+        }
+        else
+        {
+           
+            List<LMComponent>? lMComponents = JsonSerializer.Deserialize<List<LMComponent>>(GptText);
+
+            float rectYPos = (float)MenuY;
+
+            foreach(LMComponent lMComponent in lMComponents)
+            {
+                ParentRect = new Rectangle((float)MenuX, rectYPos, RectWidth, RectHeight)
+                    {
+                        RectangleID = RectId,
+                        Fill = FillColor,
+                        Text = lMComponent.Component,
+                        BorderColor = rectBorderColor
+
+                    };
+
+                Rectangles.Add(ParentRect);
+
+                ParentPacket = new Packet { PacketID = RectId, Title = lMComponent.Component, Selected = true, ProjectFK = 1 };
+
+                sharedData.MainProject.Packets.Add(ParentPacket);
+
+                rectYPos += 45;
+                RectId++;
+
+                foreach(LMSubComponent lMSubComponent in lMComponent.SubComponents)
+                {
+
+                    Rectangle childRect = new Rectangle((float)MenuX + 100, rectYPos, RectWidth, RectHeight)
+                        {
+                            RectangleID = RectId,
+                            Fill = FillColor,
+                            Text = lMSubComponent.SubComponent,
+                            BorderColor = rectBorderColor
+
+                        };
+                    Rectangles.Add(childRect);
+
+                    Packet chPacket = new Packet { PacketID = RectId, Title = lMSubComponent.SubComponent, Selected = true, ProjectFK = 1 };
+                    sharedData.MainProject.Packets.Add(chPacket);
+
+                    try
+                    {
+                        Line pchLine = new Line(ParentRect.MC, childRect.MC)
+                            {
+                                Stroke = "#000000",
+                                StrokeWidth = 2,
+                                Selected = false,
+
+
+                            };
+                        Lines.Add(pchLine);
+                        childRect.MC.Lines.Add(pchLine);
+                        chPacket.ParentID = ParentPacket.PacketID;
+
+                        chPacket.Selected = false;
+
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    
+                     rectYPos += 45;
+                     RectId++;
+
+                    foreach(LMPoint lMPoint in lMSubComponent.Points)
+                    {
+                        Rectangle pchildRect = new Rectangle((float)MenuX + 200, rectYPos, RectWidth, RectHeight)
+                            {
+                                RectangleID = RectId,
+                                Fill = FillColor,
+                                Text = lMPoint.Point,
+                                BorderColor = rectBorderColor
+
+                            };
+                        Rectangles.Add(pchildRect);
+
+                        Packet pchPacket = new Packet { PacketID = RectId, Title = lMPoint.Point , Selected = true, ProjectFK = 1 };
+                        sharedData.MainProject.Packets.Add(pchPacket);
+
+                        try
+                        {
+                            Line pchLine = new Line(childRect.MC, pchildRect.MC)
+                                {
+                                    Stroke = "#000000",
+                                    StrokeWidth = 2,
+                                    Selected = false,
+
+
+                                };
+                            Lines.Add(pchLine);
+                            pchildRect.MC.Lines.Add(pchLine);
+                            pchPacket.ParentID = chPacket.PacketID;
+
+                            pchPacket.Selected = false;
+
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+
+                        rectYPos += 45;
+                        RectId++;
+                    }
+
+                
+                }
+
+
+               
+            }
+
+            
+            GptText = "";
+            ShowtMenu = false;
+
+        }
     }
 
     private string ParentRectText { get; set; }

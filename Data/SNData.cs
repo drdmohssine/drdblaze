@@ -218,7 +218,21 @@ namespace drdblaze.Data
 
        
 
+        public class LMPoint
+        {
+            public string? Point { get; set; }
+        }
+        public class LMSubComponent
+        {
+            public string? SubComponent { get; set; }
+            public List<LMPoint>? Points { get; set; }
+        }
 
+        public class LMComponent
+        {
+            public string? Component { get; set;}
+            public List<LMSubComponent>? SubComponents { get; set; }
+        }
 
     }
 }
