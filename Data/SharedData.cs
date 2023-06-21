@@ -25,6 +25,9 @@ namespace drdblaze.Data
         public List<Edge> edges = new List<Edge>();
         public string layoutDirection = "LR";
         public string canvasColor = "#e8c6c8";
+        public string canvasImage = "https://i.imgur.com/LFFgF40.jpg";
+        public int canvasWidth = 1024;
+        public int canvasHeight = 1024;
         public string nodeColor = "#D2E5FF";
         public string fontColor = "#000000";
         public string edgeColor = "#015aaa";

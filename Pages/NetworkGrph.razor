@@ -27,8 +27,8 @@
 <div class="col">
 
 
-    <div class="row" style="background-color:@(sharedData.canvasColor)">
-        <Network @ref="sharedData.network" Id="visnet-id" Options="sharedData.EditorConstructionOptions" Data="@sharedData.data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container "style="background-color:inherit;height:2000px;width:2000px" />
+    <div class="row" style="background-image:url(@(sharedData.canvasImage));height:@(sharedData.canvasHeight)px;width:@(sharedData.canvasWidth)px;">
+        <Network @ref="sharedData.network" Id="visnet-id" Options="sharedData.EditorConstructionOptions" Data="@sharedData.data" OnDoubleClick="NetworkOnDoubleClick" class="vis-network-container "style="background-image:inherit;height:inherit;width:inherit;background-size:cover;background-repeat:no-repeat" />
     </div>
 
 
