@@ -1,0 +1,15 @@
+{
+  "name": "Blazor WebAssembly",
+  "dockerFile": "Dockerfile",
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "extensions": [
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.vscode-dotnet-runtime",
+    "ms-dotnettools.vscode-dotnet-pack",
+    "ms-dotnettools.vscode-dotnet-test-explorer"
+  ],
+  "forwardPorts": [5000],
+  "postCreateCommand": "dotnet run"
+}
