@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
-COPY ../drdblaze.csproj .
+COPY drdblaze.csproj .
 RUN dotnet restore
 
 # Copy everything else and build
