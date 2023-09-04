@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Components\" />
     <Folder Include="wwwroot\JSFiles\" />
     <Folder Include="RectVM\" />
     <Folder Include="wwwroot\Fonts\" />
@@ -37,12 +36,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Components\SNMenu.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Components\SNSideMenu.razor" />
     <_ContentIncludedByDefault Remove="Pages\NetworkGrph.razor" />
     <_ContentIncludedByDefault Remove="Shared\Error.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Shared\Error.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Components\SNMenu.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Components\SNSideMenu.razor" />
   </ItemGroup>
 
 </Project>

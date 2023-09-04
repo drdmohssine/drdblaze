@@ -20,7 +20,7 @@ namespace drdblaze.Data
         };
 
         public Network network;
-        public NetworkData data;
+        public NetworkData data = new NetworkData();
         public List<Node> nodes = new List<Node>();
         public List<Edge> edges = new List<Edge>();
         public string layoutDirection = "LR";

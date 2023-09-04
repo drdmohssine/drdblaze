@@ -1,17 +1,53 @@
 ﻿@page "/drdblaze/openfiles"
 @page "/openfiles"
+
 @implements IAsyncDisposable
 @inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
 
-<h3>OpenFiles</h3>
-<p>
-    <Button Color="ButtonColor.Primary" @onclick="OpenZipFile">Open File </Button>
 
-</p>
+<coll>
+    <row  >
+        <coll >
+           <SNSideMenu ExpandWidth="256"  >
+               <SideMenuContent>
+                    <div>
+                        Test Side menu Content
+                    </div>
+               </SideMenuContent>
+              
+           </SNSideMenu>
+        </coll>
+
+        <coll>
+             <h3 class="testmycss" >OpenFiles</h3>
+        </coll>
+    
+       
+    </row>
+    <row>
+        <p>
+            <Button Style="width:120px" Color="ButtonColor.Primary" @onclick="OpenZipFile">Open File </Button>
+
+        </p>
+        
+    </row>
+    <row>
+        <coll>
+            <Button Style="width:120px" Color="ButtonColor.Primary" > Previews </Button>
+        </coll>
+        <coll>
+            <Button Style="width:120px" Color="ButtonColor.Primary"> Next </Button>
+        </coll>
+        
+    </row>
+   
+</coll>
+
 
 @code {
 
-    
+
     IJSObjectReference JSmodule;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -38,4 +74,8 @@
             await JSmodule.DisposeAsync();
         }
     }
+
+
+
+    
 }

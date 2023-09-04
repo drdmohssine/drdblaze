@@ -47,9 +47,11 @@
 </Button>
 @code {
    
-    [Parameter] public Rectangle Rectangle { get; set; }
+    [Parameter] 
+    public Rectangle Rectangle { get; set; }
 
-    [Parameter] public EventCallback<Rectangle> OnClickCallback { get; set; }
+    [Parameter] 
+    public EventCallback<Rectangle> OnClickCallback { get; set; }
 
     protected override void OnInitialized()
     {

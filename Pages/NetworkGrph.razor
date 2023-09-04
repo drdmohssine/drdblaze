@@ -137,8 +137,6 @@
     }
 
 
-    
-
     private void OnDoubleClickEvent<T>(string name, T eventArg)
     {
         try{
@@ -170,7 +168,7 @@
 
                     if(packets.Count > 0)
                     {
-                    
+
 
                         foreach (Packet packet in packets)
                         {
@@ -206,15 +204,16 @@
 
                         }
 
+                      
 
+                      
+                         sharedData.data = new NetworkData
+                             {
+                                 Edges = sharedData.edges,
+                                 Nodes = sharedData.nodes
+                             };
 
-                        sharedData.data = new NetworkData
-                            {
-                                Edges = sharedData.edges,
-                                Nodes = sharedData.nodes
-                            };
-
-
+                       
 
                         CurrentLevel = packets[0].Level;
 
@@ -244,14 +243,9 @@
 
     }
 
-
-
-
     private void NetworkOnDoubleClick(ClickEvent eventArg) => OnDoubleClickEvent("doubleClick", eventArg);
 
     //private void NetworkOnClick(ClickEvent eventArg) => AddEvent("click", eventArg);
-
-
 
     private async Task GetGraph()
     {

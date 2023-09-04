@@ -56,7 +56,7 @@
     [Parameter]
     public Rectangle Rectangle { get; set; }
     [Parameter]
-    public string TextColor { get; set; }
+    public string? TextColor { get; set; }
     [Parameter]
     public EventCallback OnMouseDown { get; set; }
     [Parameter]
@@ -116,7 +116,7 @@
         await OnMouseMove.InvokeAsync();
     }
 
-    private Modal modal;
+    
 
 
    

@@ -1,0 +1,23 @@
+﻿
+<div class="sn-menu " style="height:fit-content;width:fit-content;
+    min-width: 220px;
+    top: 200px;
+    left: 400px;
+    position:absolute;
+    transform-origin: top left;
+    z-index: 6; ">
+
+    <ul class="menu_list"  >
+        @ListItems
+       
+   </ul>
+   
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ListItems { get; set; }
+
+
+}

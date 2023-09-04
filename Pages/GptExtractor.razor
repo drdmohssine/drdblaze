@@ -406,9 +406,9 @@ else
     private ConfirmDialog? dialog;
     private Offcanvas? offcanvas;
     private bool skiaCanvasView { get; set; } = false;
-    private SKTypeface typeface { get; set; }
+    private SKTypeface? typeface { get; set; }
 
-    private string SelectedShapeOption { get; set; }
+    private string? SelectedShapeOption { get; set; }
 
     List<Rectangle> Rectangles = new List<Rectangle>();
     List<Line> Lines = new List<Line>();
@@ -685,10 +685,10 @@ else
         if (confirmation)
         {
             // do whatever
-           
+
             Lines = Lines.Except(rectangle.MC.Lines).ToList();
             sharedData.MainProject.Packets.Remove(sharedData.MainProject.Packets.Where(r => r.PacketID == rectangle.RectangleID).FirstOrDefault());
-            
+
             Rectangles.Remove(rectangle);
             await modal?.HideAsync();
         }
@@ -722,13 +722,15 @@ else
 
 
     private Modal modal;
-
+   
     private async Task OnShowModalClick(Rectangle rectangle)
     {
         var parameters = new Dictionary<string, object>();
         parameters.Add("Rectangle", rectangle);
         parameters.Add("OnclickCallback", EventCallback.Factory.Create<Rectangle>(this, RemoveRectangle));
         await modal.ShowAsync<RectModal>(title: "Rectangle Details", parameters: parameters);
+
+        
     }
 
     private string? message;
@@ -963,8 +965,8 @@ else
                 //Connect to a selected Rectangle
                 if(Rectangles.Where(s => s.Selected == true).Count() == 1)
                 {
-                    Rectangle RTRectangle = Rectangles.Where(s => s.Selected == true).FirstOrDefault();
-                    Packet RTPacket = sharedData.MainProject.Packets.Where(p => p.PacketID == RTRectangle.RectangleID).FirstOrDefault();
+                    Rectangle? RTRectangle = Rectangles.Where(s => s.Selected == true).FirstOrDefault();
+                    Packet? RTPacket = sharedData.MainProject.Packets.Where(p => p.PacketID == RTRectangle.RectangleID).FirstOrDefault();
 
                     try
                     {
@@ -1466,7 +1468,7 @@ else
             if (SelectedShapeOption == "TLC")
             {
 
-                float TWidths;
+                
                 foreach (Rectangle rect in FirstList)
                 {
 
@@ -1496,7 +1498,7 @@ else
             if (SelectedShapeOption == "TRC")
             {
 
-                float TWidths;
+                
                 foreach (Rectangle rect in FirstList)
                 {
 
