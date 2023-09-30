@@ -1,0 +1,98 @@
+﻿body {
+}
+
+.testmycss{
+    background-color: burlywood;
+    
+}
+
+/*!
+ * Menu Style
+ * icon not working test with internet
+ */
+.sn-menu {
+    position: absolute;
+    display: inline-block;
+    max-width: 80%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);
+    border-radius: 4px;
+
+
+}
+
+.menu_list {
+    background: #FFF;
+    color: rgba(0,0,0,.87);
+    font-family: Roboto,sans-serif;
+    line-height: 1.5;
+}
+
+.menu_list_item {
+    align-items: center;
+    display: flex;
+    flex: 1 1 100%;
+    min-height: 40px;
+    outline: 0;
+    padding: 0 16px;
+    position: relative;
+    text-decoration: none;
+    cursor: pointer;
+    
+}
+.menu_list_item:hover{
+    background-color:lightgray
+}
+
+.menu-list-item-icon {
+    align-self: flex-start;
+    margin: 16px 0;
+}
+.list-item-icon { 
+    align-items: center;
+    font-feature-settings: "liga";
+    font-size: 24px;
+    justify-content: center;
+    line-height: 1;
+    position: relative;
+    text-indent: 0;
+    transition: .3s cubic-bezier(.25,.8,.5,1),visibility 0s;
+    vertical-align: middle;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
+
+
+/*!
+ * Side Menu Style
+ * Collapse width:56px , Expand width:256
+ */
+
+
+
+.sn-side-menu {
+    height: 100vh;
+    background-image: linear-gradient(to right bottom, #5e92f3,#97aaf6,#c0c4f8,#e2e1fb,#ffffff);
+    transition-duration: .3s;
+    transition-timing-function: cubic-bezier(.5,.2,.3,.5);
+    transition-property: transform,visibility,width;
+}
+
+/*!
+ * brand box
+ */
+.brand-box {
+    align-items: center;
+    display: flex;
+    flex: 1 1 100%;
+    min-height: 48px;
+    outline: 0;
+    padding: 0 4px;
+    position: relative;
+    text-decoration: none;
+    background-color:gray;
+}
