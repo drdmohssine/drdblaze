@@ -65,7 +65,7 @@
 
                 },
 
-                Font = $"14px arial {sharedData.fontColor}",
+                Font = $"{sharedData.fontSize} {sharedData.fontFamily} {sharedData.fontColor} ",
         }
         );
 
@@ -93,7 +93,7 @@
                     Right = 10,
                     Top = 10
                 },
-                    Font = $"14px arial {sharedData.fontColor}",
+                    Font = $"{sharedData.fontSize} {sharedData.fontFamily} {sharedData.fontColor} ",
             } );
 
             //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
@@ -179,7 +179,7 @@
 
                                 sharedData.nodes.Add(new Node(packet.PacketID.ToString(), sharedData.SplitTextToFitWidth(packet.Title, 30), packet.Level, "box")
                                 {
-                                        Font = $"14px arial {sharedData.fontColor}",
+                                        Font = $"{sharedData.fontSize} {sharedData.fontFamily} {sharedData.fontColor} ",
                                         Shadow = new NodeShadowOption()
                                         {
                                             Enabled = true,
@@ -269,7 +269,7 @@
 
                 },
 
-                Font = $"14px arial {sharedData.fontColor}",
+                    Font = $"{sharedData.fontSize} {sharedData.fontFamily} {sharedData.fontColor} ",
             }
         );
 
@@ -297,7 +297,7 @@
                         Right = 10,
                         Top = 10
                     },
-                    Font = $"14px arial {sharedData.fontColor}",
+                    Font = $"{sharedData.fontSize} {sharedData.fontFamily} {sharedData.fontColor} ",
                 });
 
             //nodes.Add(new Node(packet.PacketID.ToString(), packet.Title, 2, "box"));
