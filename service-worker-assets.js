@@ -61,15 +61,15 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-kmtdsl6+BKrqdrKyBm3ISyH8mX6RN9NNBWWzeTT68Ik=",
+      "hash": "sha256-rDMPf07GbgAEZxCTnr1+3g65rThQIcywuLLwoHcRoG0=",
       "url": "_framework\/blazor.boot.json"
     },
     {
-      "hash": "sha256-\/dvm+0S1I+e170T7eM+D50XO7SOsXHIjoIfkmpa+URo=",
+      "hash": "sha256-LoyLJuD0xzj8jKl8lTotK25Nf\/QCYRXNmxbypd5\/tQ4=",
       "url": "_framework\/dotnet.native.8.0.8.gsazcxp5hm.js"
     },
     {
-      "hash": "sha256-o193ncN58TTZCPXw+9Ne5XyScIWIcqXoCdmHUemeOoE=",
+      "hash": "sha256-TP3c1lIG5ieqPdSmNAAx84gbQ7LJs4VeMEOE6bB1byM=",
       "url": "_framework\/dotnet.native.wasm"
     },
     {
@@ -77,7 +77,7 @@
       "url": "_framework\/BlazorBootstrap.wasm"
     },
     {
-      "hash": "sha256-QA\/w9y5F8sX09szSzZvdLyCLr8i9fpL\/eEoOpF\/COag=",
+      "hash": "sha256-y6wtwL\/uTCVPYbQtlntLmy+WShTqMliptr4FhnmooJ4=",
       "url": "_framework\/drdblaze.wasm"
     },
     {
@@ -85,7 +85,7 @@
       "url": "_framework\/Microsoft.AspNetCore.Components.Forms.wasm"
     },
     {
-      "hash": "sha256-dXryM1UXG6nPJASyqnYmGU8SDG\/8gPHYtEvZkLxPzIs=",
+      "hash": "sha256-\/IQPWrJxu+cBKDjPDQPX\/NxVXAa5SUts7Mwlrll6RqU=",
       "url": "_framework\/Microsoft.AspNetCore.Components.wasm"
     },
     {
@@ -141,7 +141,7 @@
       "url": "_framework\/Microsoft.JSInterop.WebAssembly.wasm"
     },
     {
-      "hash": "sha256-1TwmgMEa4LOXssw4DDVNahMPtWghURRwW\/GAQeKqNO4=",
+      "hash": "sha256-xri6EbXUKkBipU\/CJ1Dm9Fg7ifBhpPPZfZh99ZFhD+w=",
       "url": "_framework\/SkiaSharp.Views.Blazor.wasm"
     },
     {
@@ -225,7 +225,7 @@
       "url": "_framework\/System.ObjectModel.wasm"
     },
     {
-      "hash": "sha256-0O34G7XAooDsbe9QJ7\/+fbwQ2Mb5A2iFxE\/vqidCDas=",
+      "hash": "sha256-we0NORGpCX9Ocj1NLcevsLaID4HroZIcHIW2hTuASWc=",
       "url": "_framework\/System.Private.CoreLib.wasm"
     },
     {
@@ -237,7 +237,7 @@
       "url": "_framework\/System.Runtime.InteropServices.JavaScript.wasm"
     },
     {
-      "hash": "sha256-daZY1eY20WlQYr4\/AC9ZpAuM7afmFPzEu6HEzeDfqvo=",
+      "hash": "sha256-RgPrqWN5nXdtFAW7fIsuNMo2hEjgB8N\/Ia7sPonUumo=",
       "url": "_framework\/System.Runtime.wasm"
     },
     {
@@ -301,5 +301,5 @@
       "url": "_content\/VisNetwork.Blazor\/BlazorVisNetwork.js.map"
     }
   ],
-  "version": "mOnuICsX"
+  "version": "qXPhP7HT"
 };
