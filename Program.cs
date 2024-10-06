@@ -1,6 +1,7 @@
 using BlazorBootstrap;
 using drdblaze;
 using drdblaze.Data;
+using drdblaze.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using VisNetwork.Blazor;
@@ -14,6 +15,8 @@ builder.Services.AddSingleton<SharedData, SharedData>();
 
 builder.Services.AddVisNetwork();
 
+ // Register the FetchDataService
+builder.Services.AddScoped<FetchDataService>();
 
 builder.Services.AddBlazorBootstrap(); 
 await builder.Build().RunAsync();

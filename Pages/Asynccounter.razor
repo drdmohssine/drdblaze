@@ -1,0 +1,164 @@
+﻿@page "/drdblaze/asynccounter"
+@page "/asynccounter"
+@using drdblaze.Services
+@inject FetchDataService FetchDataService
+
+
+<div class="container overflow-auto">
+
+
+
+<div class="row w-100 p-3 border border-dark-subtle" style="height:300px ;"> 
+
+
+<h3>Non-blocking Async/Await Demo</h3>
+
+<p>Current count: @currentCount</p>
+
+<p>@message</p>
+
+<button class="btn btn-primary" @onclick="IncrementCountAsync">Click me to start async work</button>
+
+<p><strong>Notice that the UI remains responsive while waiting for the task to complete.</strong></p>
+
+</div>
+
+
+<div class ="row w-100 p-3 border border-dark-subtle" style="height:300px ;">
+
+<h3>Async Method Pass Parameters Using Variables Example</h3>
+
+<p>Enter a message and click the button:</p>
+
+<input type="text" @bind="inputMessage" />
+<button @onclick="CallAsyncMethod">Execute Async Method</button>
+
+@if (!string.IsNullOrEmpty(resultMessage))
+{
+    <p>Result: @resultMessage</p>
+}
+
+
+</div>
+
+<div class ="row w-100 p-3 border border-dark-subtle" style="height:300px ;" >
+
+
+<h3>Async Method Example with Button-level Parameter</h3>
+
+<p>Enter a message and click the button:</p>
+
+<input type="text" @bind="inputMessage2" />
+<button @onclick="() => CallAsyncMethod2(inputMessage2)">Execute Async Method</button>
+
+@if (!string.IsNullOrEmpty(resultMessage2))
+{
+    <p>Result: @resultMessage2</p>
+}
+
+</div>
+
+<div class ="row w-100 p-3 border border-dark-subtle" style="height:300px ;" >
+
+<h3>Asynchronous List Example</h3>
+
+@if (items is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in items)
+        {
+            <li>@item</li>
+        }
+    </ul>
+}
+
+
+</div>
+
+</div>
+
+
+
+@code {
+    private int currentCount = 0;
+    private string message = "Waiting for action...";
+
+    private async Task IncrementCountAsync()
+    {
+        // Show a message immediately to indicate the operation started
+        message = "Working asynchronously, please wait...";
+        
+        // Simulate a long-running task
+        await Task.Delay(5000); // Wait for 5 seconds
+        
+        // Update the count after task completion
+        currentCount++;
+        
+        // Update message to show the operation finished
+        message = "Task completed!";
+    }
+}
+
+
+@code {
+    private string inputMessage = string.Empty;
+    private string resultMessage = string.Empty;
+
+    // Asynchronous method that accepts a parameter
+    private async Task<string> MyAsyncMethod(string message)
+    {
+        // Simulate some async work (e.g., API call or long-running process)
+        await Task.Delay(2000);
+        return $"Processed message: {message}";
+    }
+
+    // Method to call the asynchronous method
+    private async Task CallAsyncMethod()
+    {
+        resultMessage = await MyAsyncMethod(inputMessage);
+    }
+}
+
+@code {
+    private string inputMessage2 = string.Empty;
+    private string resultMessage2 = string.Empty;
+
+    // Asynchronous method that accepts a parameter
+    private async Task<string> MyAsyncMethod2(string message)
+    {
+        // Simulate some async work (e.g., API call or long-running process)
+        await Task.Delay(2000);
+        return $"Processed message: {message}";
+    }
+
+    // Method to call the asynchronous method with a parameter
+    private async Task CallAsyncMethod2(string message)
+    {
+        resultMessage2 = await MyAsyncMethod2(message);
+    }
+}
+
+
+@code {
+
+    /* Asynchronous List Example */
+
+    private List<string> items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = new List<string>();
+        
+        // Get the IAsyncEnumerable<string>
+        await foreach (var item in FetchDataService.GetItemsAsync())
+        {
+            items.Add(item);
+            // Trigger UI update as items are added
+            StateHasChanged();
+        }
+    }
+}
