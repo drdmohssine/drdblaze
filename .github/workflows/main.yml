@@ -25,8 +25,8 @@ jobs:
       
 
     # publishes Blazor project to the release-folder
-    - name: Publish .NET 7 Project
-      run: dotnet publish drdblaze.csproj -c Release -o release --nologo
+    - name: Publish .NET 8 Project
+      run: dotnet publish drdblaze/drdblaze.csproj -c Release -o release --nologo
       
       
     # changes the base-tag in index.html from '/' to 'drdblaze' to match GitHub Pages repository subdirectory
