@@ -31,20 +31,14 @@ jobs:
 
     # Restore dependencies
     - name: Restore NuGet packages
-      run: dotnet restore
+      
       env:
         # Enable credential provider session token cache
-        NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED: "true"
-
-        # Configure authentication for Azure Artifacts feeds
-        VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: >
-          {
-            "https://drdmohssine.pkgs.visualstudio.com/MSLibraries/_packaging/MSPkgFeed/nuget/v3/index.json":
-            {
-              "username": "AzureArtifacts",
-              "password": "${{ secrets.AZURE_ARTIFACTS_PAT }}"
-            }
-          }
+        NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED: "true"   
+        VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: '{"endpointCredentials": [{"endpoint":"https://drdmohssine.pkgs.visualstudio.com/MSLibraries/_packaging/MSPkgFeed/nuget/v3/index.json", "password":"${{ secrets.AZURE_ARTIFACTS_PAT }}"}]'
+        
+      run: dotnet restore
+       
         
     # publishes Blazor project to the release-folder
     - name: Publish .NET 8 Project
