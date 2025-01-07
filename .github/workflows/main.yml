@@ -37,10 +37,10 @@ jobs:
         VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: '{"endpointCredentials":[{"endpoint":"https://drdmohssine.pkgs.visualstudio.com/MSLibraries/_packaging/MSPkgFeed/nuget/v3/index.json","password":"${{ secrets.AZURE_ARTIFACTS_PAT }}"}]}'
       run: dotnet restore
       
-    # publishes Blazor project to the release folder
+      # publishes Blazor project to the release-folder
     - name: Publish .NET 8 Project
-      run: dotnet publish drdblaze.csproj -c Release -o release --nologo
-      
+      run: dotnet publish drdblaze/drdblaze.csproj -c Release -o release --nologo
+
     # changes the base tag in index.html from '/' to 'drdblaze' to match GitHub Pages repository subdirectory
     - name: Change base-tag in index.html from / to drdblaze
       run: sed -i 's/<base href="\/" \/>/<base href="\/drdblaze\/" \/>/g' release/wwwroot/index.html
