@@ -1,0 +1,28 @@
+﻿
+@* ColumnTextWrapper.razor *@
+<div class="column-wrapper" style="--column-count: @(Columns);">
+    @if (Columns.HasValue)
+    {
+        <div class="column-content" style="columns: @Columns.Value;">
+            @ChildContent
+        </div>
+    }
+    else
+    {
+        @ChildContent
+    }
+</div>
+
+
+
+
+
+
+@code {
+    [Parameter]
+    public int? Columns { get; set; }
+
+    // The child content to be displayed inside the columns
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

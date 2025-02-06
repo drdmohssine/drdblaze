@@ -1,0 +1,11 @@
+.column-wrapper {
+    display: block; /* Ensure the wrapper spans the full width of its parent container */
+    
+}
+
+.column-content {
+    columns: var(--column-count, auto); /* Dynamically set column-count from CSS variable */
+    column-gap: 1.5rem; /* Adjust the gap between columns */
+    word-wrap: break-word; /* Prevent overflowing text */
+   
+}
