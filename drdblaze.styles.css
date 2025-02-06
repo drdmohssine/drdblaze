@@ -1,5 +1,17 @@
 @import '_content/Blazor.Bootstrap/Blazor.Bootstrap.bundle.scp.css';
 
+/* /Pages/Components/ColumnTextWrapper.razor.rz.scp.css */
+.column-wrapper[b-j0ujqtpbu5] {
+    display: block; /* Ensure the wrapper spans the full width of its parent container */
+    
+}
+
+.column-content[b-j0ujqtpbu5] {
+    columns: var(--column-count, auto); /* Dynamically set column-count from CSS variable */
+    column-gap: 1.5rem; /* Adjust the gap between columns */
+    word-wrap: break-word; /* Prevent overflowing text */
+   
+}
 /* /Pages/Components/SNMenu.razor.rz.scp.css */
 body[b-9blluu25c1] {
 }
