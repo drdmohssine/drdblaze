@@ -13,7 +13,7 @@ jobs:
     # uses GitHub's checkout action to checkout code from the master branch
     - uses: actions/checkout@v2
     
-    # sets up .NET 9
+    # sets up .NET 8
     - name: Setup .NET 8
       uses: actions/setup-dotnet@v1
       with:
@@ -38,7 +38,7 @@ jobs:
       run: dotnet restore
       
       # publishes Blazor project to the release-folder
-    - name: Publish .NET 9 Project
+    - name: Publish .NET 8 Project
       run: dotnet publish drdblaze/drdblaze.csproj -c Release -o release --nologo
 
     # changes the base tag in index.html from '/' to 'drdblaze' to match GitHub Pages repository subdirectory
